@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEM PENGURUSAN GAMBAR KELAS TAHUN 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card-year { cursor: pointer; transition: transform 0.2s; border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card-year:hover { transform: translateY(-5px); background-color: #e9ecef; }
+        .admin-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; }
+    </style>
+</head>
+<body>
+
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">SISTEM PENGURUSAN GAMBAR KELAS TAHUN 2026</h2>
+            <p class="text-muted">Sila pilih Tahun pengajian anak anda di bawah</p>
+        </div>
+
+        <!-- Paparan Utama: Senarai Tahun -->
+        <div id="mainView" class="row g-4 justify-content-center">
+            <!-- Dinamik dari JS -->
+        </div>
+
+        <!-- Paparan Borang Tempahan -->
+        <div id="formView" class="card shadow p-4 mt-4" style="display: none;">
+            <button class="btn btn-outline-secondary btn-sm mb-3 w-auto" onclick="backToMain()"><i class="fas fa-arrow-left"></i> Kembali</button>
+            <h3 id="formTitle" class="mb-3 text-secondary"></h3>
+            
+            <form id="orderForm" onsubmit="handleFormSubmit(event)">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Pilih Kelas</label>
+                    <select id="kelasSelect" class="form-select" required></select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nama Penuh Murid</label>
+                    <input type="text" id="namaMurid" class="form-control" placeholder="Masukkan nama penuh murid" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Pilih Pakej Gambar</label>
+                    <div id="pakejContainer"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Kaedah Pembayaran</label>
+                    <select id="bayaranSelect" class="form-select" onchange="togglePaymentMethod()" required>
+                        <option value="">-- Sila Pilih Kaedah Pembayaran --</option>
+                        <option value="Tunai">Tunai (Melalui Guru Kelas)</option>
+                        <option value="QR">QR (Akaun DBHOSS Familia)</option>
+                    </select>
+                </div>
+
+                <!-- Info QR -->
+                <div id="qrInfoSection" class="mb-3 p-3 bg-light border rounded" style="display: none;">
+                    <p class="fw-bold mb-1">Sila buat bayaran ke Akaun DBHOSS Familia dan muat naik resit:</p>
+                    <p class="text-muted small mb-2">[ Paparan QR Code Akaun DBHOSS Familia di sini ]</p>
+                    <label class="form-label fw-bold">Muat Naik Resit (PDF / JPG)</label>
+                    <input type="file" id="resitFile" class="form-control" accept=".pdf, .jpg, .jpeg">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2"><i class="fas fa-paper-plane"></i> Hantar Tempahan</button>
+            </form>
+        </div>
+
+        <!-- Paparan Pengesahan Berjaya -->
+        <div id="successView" class="text-center py-5" style="display: none;">
+            <div class="card shadow p-5 mx-auto" style="max-width: 500px; border-radius: 15px;">
+                <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+                <h3 class="fw-bold">Tempahan Berjaya Dihantar!</h3>
+                <p class="text-muted">Maklumat tempahan anda telah direkodkan di dalam sistem.</p>
+                <button class="btn btn-primary mt-3" onclick="location.reload()">Buat Tempahan Baharu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Lock Button -->
+    <button class="btn btn-dark admin-btn shadow" onclick="openAdminModal()" title="Admin Login"><i class="fas fa-lock"></i></button>
+
+    <!-- Admin Modal -->
+    <div class="modal fade" id="adminModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-lock"></i> Log Masuk Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="loginSection">
+                        <div class="mb-3">
+                            <label class="form-label">Kata Laluan Guru</label>
+                            <input type="password" id="adminPassword" class="form-control" placeholder="Masukkan kata laluan">
+                        </div>
+                        <button class="btn btn-dark w-100" onclick="verifyAdmin()">Log Masuk</button>
+                    </div>
+                    <div id="adminPanelSection" style="display: none;">
+                        <h6 class="text-success fw-bold mb-3"><i class="fas fa-check"></i> Log Masuk Sah</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Pilih Tahun</label>
+                            <select id="adminTahunSelect" class="form-select" onchange="updateAdminKelasList()"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Pilih Kelas untuk Muat Turun Rumusan PDF</label>
+                            <select id="adminKelasSelect" class="form-select"></select>
+                        </div>
+                        <button class="btn btn-danger w-100" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Muat Turun Rumusan PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let globalKelasData = {};
+        let selectedYear = "";
+        let selectedPackageData = null;
+
+        const years = ["PPKI", "Tahun 1", "Tahun 2", "Tahun 3", "Tahun 4", "Tahun 5", "Tahun 6"];
+
+        window.onload = function() {
+            google.script.run.withSuccessHandler(function(data) {
+                globalKelasData = data;
+                renderYearCards();
+            }).getKelasList();
+        };
+
+        function renderYearCards() {
+            const container = document.getElementById("mainView");
+            container.innerHTML = "";
+            years.forEach(tahun => {
+                container.innerHTML += `
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card card-year text-center p-4 bg-white" onclick="selectYear('${tahun}')">
+                            <div class="card-body">
+                                <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                                <h4 class="card-title fw-bold">${tahun}</h4>
+                                <p class="text-muted small mb-0">Klik untuk buat tempahan</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function selectYear(tahun) {
+            selectedYear = tahun;
+            document.getElementById("mainView").style.display = "none";
+            document.getElementById("formView").style.display = "block";
+            document.getElementById("formTitle").innerText = `Tempahan Pakej Gambar - ${tahun}`;
+
+            // Isi dropdown kelas
+            const kelasSelect = document.getElementById("kelasSelect");
+            kelasSelect.innerHTML = "";
+            globalKelasData[tahun].forEach(kelas => {
+                kelasSelect.innerHTML += `<option value="${kelas}">${kelas}</option>`;
+            });
+
+            // Tetapkan pilihan pakej berdasarkan tahun
+            const pakejContainer = document.getElementById("pakejContainer");
+            pakejContainer.innerHTML = "";
+            if (tahun === "Tahun 6") {
+                pakejContainer.innerHTML = `
+                    <div class="form-check border p-3 rounded mb-2">
+                        <input class="form-check-input" type="radio" name="pakej" value="Pakej C - Gambar Freestyle bersaiz 5R (RM 5)" data-harga="5" required onchange="updatePrice()">
+                        <label class="form-check-label fw-bold">Pakej C - Gambar Freestyle bersaiz 5R</label>
+                        <div class="text-primary">Harga: RM 5.00</div>
+                    </div>
+                `;
+            } else {
+                pakejContainer.innerHTML = `
+                    <div class="form-check border p-3 rounded mb-2">
+                        <input class="form-check-input" type="radio" name="pakej" value="Pakej A - Gambar formal bersaiz A4 (RM 12)" data-harga="12" required onchange="updatePrice()">
+                        <label class="form-check-label fw-bold">Pakej A - Gambar formal bersaiz A4</label>
+                        <div class="text-primary">Harga: RM 12.00</div>
+                    </div>
+                    <div class="form-check border p-3 rounded mb-2">
+                        <input class="form-check-input" type="radio" name="pakej" value="Pakej B - Gambar formal A4 & Freestyle 5R (RM 24)" data-harga="24" required onchange="updatePrice()">
+                        <label class="form-check-label fw-bold">Pakej B - Gambar formal bersaiz A4 (RM 12) & Gambar Freestyle bersaiz 5R (RM 12)</label>
+                        <div class="text-primary">Harga: RM 24.00</div>
+                    </div>
+                `;
+            }
+        }
+
+        function backToMain() {
+            document.getElementById("formView").style.display = "none";
+            document.getElementById("mainView").style.display = "flex";
+            document.getElementById("orderForm").reset();
+        }
+
+        function togglePaymentMethod() {
+            const method = document.getElementById("bayaranSelect").value;
+            const qrSection = document.getElementById("qrInfoSection");
+            const fileInput = document.getElementById("resitFile");
+            if (method === "QR") {
+                qrSection.style.display = "block";
+                fileInput.required = true;
+            } else {
+                qrSection.style.display = "none";
+                fileInput.required = false;
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const selectedRadio = document.querySelector('input[name="pakej"]:checked');
+            
+            let formData = {
+                tahun: selectedYear,
+                kelas: document.getElementById("kelasSelect").value,
+                namaMurid: document.getElementById("namaMurid").value,
+                pakej: selectedRadio.value,
+                harga: selectedRadio.getAttribute("data-harga"),
+                bayaran: document.getElementById("bayaranSelect").value
+            };
+
+            const fileInput = document.getElementById("resitFile");
+            if (formData.bayaran === "QR" && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result.split(",")[1];
+                    formData.fileData = content;
+                    formData.fileName = file.name;
+                    formData.fileMimeType = file.type;
+                    sendDataToServer(formData);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                sendDataToServer(formData);
+            }
+        }
+
+        function sendDataToServer(formData) {
+            Swal ? Swal.fire({title: 'Sedang menghantar...', allowOutsideClick: false, didOpen: () => {Swal.showLoading();}}) : null;
+            google.script.run.withSuccessHandler(function(response) {
+                if (response.success) {
+                    document.getElementById("formView").style.display = "none";
+                    document.getElementById("successView").style.display = "block";
+                    if(Swal) Swal.close();
+                } else {
+                    alert("Ralat: " + response.message);
+                }
+            }).submitOrder(formData);
+        }
+
+        // Admin Functions
+        function openAdminModal() {
+            var myModal = new bootstrap.Modal(document.getElementById('adminModal'));
+            myModal.show();
+        }
+
+        function verifyAdmin() {
+            const pwd = document.getElementById("adminPassword").value;
+            google.script.run.withSuccessHandler(function(res) {
+                if (res.success) {
+                    document.getElementById("loginSection").style.display = "none";
+                    document.getElementById("adminPanelSection").style.display = "block";
+                    
+                    const adminTahunSelect = document.getElementById("adminTahunSelect");
+                    adminTahunSelect.innerHTML = "";
+                    years.forEach(t => {
+                        adminTahunSelect.innerHTML += `<option value="${t}">${t}</option>`;
+                    });
+                    updateAdminKelasList();
+                } else {
+                    alert(res.message);
+                }
+            }).verifyAdminAndGetData(pwd);
+        }
+
+        function updateAdminKelasList() {
+            const tahun = document.getElementById("adminTahunSelect").value;
+            const adminKelasSelect = document.getElementById("adminKelasSelect");
+            adminKelasSelect.innerHTML = "";
+            if (globalKelasData[tahun]) {
+                globalKelasData[tahun].forEach(k => {
+                    adminKelasSelect.innerHTML += `<option value="${k}">${k}</option>`;
+                });
+            }
+        }
+
+        function downloadPDF() {
+            const tahun = document.getElementById("adminTahunSelect").value;
+            const kelas = document.getElementById("adminKelasSelect").value;
+
+            google.script.run.withSuccessHandler(function(res) {
+                if (res.success) {
+                    const link = document.createElement('a');
+                    link.href = 'data:application/pdf;base64,' + res.base64Data;
+                    link.download = res.fileName;
+                    link.click();
+                } else {
+                    alert("Ralat menjana PDF: " + res.message);
+                }
+            }).generateClassPDF(tahun, kelas);
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>
