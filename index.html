@@ -754,23 +754,23 @@
 
             ordersDB.slice(-15).reverse().forEach(ord => {
                 let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-2.5 font-medium text-slate-900">
-                        ${ord.studentName}
-                        <div class="text-[10px] text-slate-400">${ord.orderId}</div>
-                    </td>
-                    <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
-                    <td class="p-2.5 text-slate-600">
-                        <span class="font-bold text-indigo-700">${ord.paymentMethod}</span>
-                        <div class="text-[10px] text-slate-500 truncate max-w-[120px]" title="${ord.receiptName}">${ord.receiptName}</div>
-                    </td>
-                    <td class="p-2.5 text-center">
-                        <button onclick='openReceiptInspector(${JSON.stringify(ord)})' class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-lg font-medium text-[11px] transition inline-flex items-center space-x-1">
-                            <i class="fa-solid fa-eye"></i>
-                            <span>Semak</span>
-                        </button>
-                    </td>
-                `;
+           tr.innerHTML = `
+    <td class="p-2.5 font-medium text-slate-900">
+        ${ord.studentName}
+        <div class="text-[10px] text-slate-400">${ord.orderId}</div>
+    </td>
+    <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
+    <td class="p-2.5 text-slate-600">
+        <span class="font-bold text-indigo-700">${ord.paymentMethod}</span>
+        <div class="text-[10px] text-slate-500 truncate max-w-[120px]" title="${ord.receiptName}">${ord.receiptName}</div>
+    </td>
+    <td class="p-2.5 text-center">
+        <button onclick="openReceiptInspector('${ord.orderId}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-lg font-medium text-[11px] transition inline-flex items-center space-x-1">
+            <i class="fa-solid fa-eye"></i>
+            <span>Semak</span>
+        </button>
+    </td>
+`;
                 tbody.appendChild(tr);
             });
         }
