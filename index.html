@@ -901,12 +901,18 @@ function openReceiptInspector(orderId) {
             }
         }
 
-        function downloadClassReportPDF() {
+ function downloadClassReportPDF() {
             const yr = document.getElementById('reportYearSelect').value;
-    const cls = document.getElementById('reportClassSelect').value; // Pastikan .value di luar kurungan
+            const cls = document.getElementById('reportClassSelect').value;
 
             ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
             const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
+
+            // Kira jumlah pakej berdasarkan data yang telah ditapis (filtered)
+            let countPkgA = filtered.filter(ord => ord.package === "Pakej A").length;
+            let countPkgB = filtered.filter(ord => ord.package === "Pakej B").length;
+            let countPkgC = filtered.filter(ord => ord.package === "Pakej C").length;
+            let totalClassAmount = filtered.reduce((sum, item) => sum + Number(item.price || 0), 0);
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -939,14 +945,25 @@ function openReceiptInspector(orderId) {
                 theme: 'grid',
                 headStyles: { fillColor: [30, 27, 75] },
                 styles: { fontSize: 8 }
-            });
+            });            
 
-            let totalClassAmount = filtered.reduce((sum, item) => sum + item.price, 0);
+           // Ambil kedudukan Y terakhir selepas jadual siap dilukis
             let finalY = doc.lastAutoTable.finalY + 10;
-            doc.setTextColor(30, 30, 30);
-            doc.setFontSize(10);
-            doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 14, finalY);
+            
+            // Lukis kotak latar belakang untuk rumusan (Summary Box) supaya nampak kemas
+            doc.setFillColor(241, 245, 249); // Warna kelabu lembut
+            doc.roundedRect(14, finalY, 182, 26, 3, 3, 'F');
 
+            // Masukkan teks maklumat kuantiti pakej dan kutipan di dalam kotak
+            doc.setTextColor(30, 30, 30);
+            doc.setFontSize(9);
+            doc.text(`Jumlah Tempahan: ${filtered.length} orang  |  Pakej A: ${countPkgA} unit  |  Pakej B: ${countPkgB} unit  |  Pakej C: ${countPkgC} unit`, 20, finalY + 8);
+            
+            doc.setFont(undefined, 'bold');
+            doc.setFontSize(10);
+            doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
+
+            // Simpan fail PDF
             doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
         }
 
