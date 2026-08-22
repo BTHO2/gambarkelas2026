@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISTEM PENGURUSAN GAMBAR KELAS TAHUN 2026</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Pautan Tempatan (Local) -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome mungkin masih perlukan CDN, atau muat turun secara berasingan -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .card-year { cursor: pointer; transition: transform 0.2s; border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card-year:hover { transform: translateY(-5px); background-color: #e9ecef; }
-        .admin-btn { position: fixed; bottom: 20px; right: 20px; z-index: 1000; border-radius: 50%; width: 60px; height: 60px; }
+        /* Gaya CSS anda di sini */
     </style>
 </head>
 <body>
