@@ -59,16 +59,17 @@
                 <p class="text-slate-600 text-sm">Pilih kategori tahun murid anda untuk meneruskan tempahan pakej gambar kelas.</p>
             </div>
 
-            <!-- Quick Announcement banner -->
-            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-start space-x-3 text-xs text-amber-900 shadow-sm max-w-4xl mx-auto">
-                <div class="bg-amber-100 text-amber-700 p-2 rounded-xl mt-0.5">
-                    <i class="fa-solid fa-bullhorn"></i>
-                </div>
-                <div>
-                    <strong class="font-bold block text-amber-950 mb-0.5">Notis Penting Ibu Bapa / Penjaga:</strong>
-                    Sila pastikan nama penuh murid ditaip dengan betul semasa membuat tempahan bagi memudahkan pihak sekolah membuat semakan pembayaran bersama guru kelas.
-                </div>
-            </div>
+        <!-- Quick Announcement banner -->
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-start space-x-3 text-xs text-amber-900 shadow-sm max-w-4xl mx-auto">
+    <div class="bg-amber-100 text-amber-700 p-2 rounded-xl mt-0.5">
+        <i class="fa-solid fa-bullhorn"></i>
+    </div>
+    <div>
+        <strong class="font-bold block text-amber-950 mb-0.5">Notis Penting Ibu Bapa / Penjaga:</strong>
+        Sila pastikan nama penuh murid ditaip dengan betul semasa membuat tempahan. 
+        <span class="block mt-1 font-bold text-rose-600">⚠️ Tarikh tutup tempahan adalah pada 10 September 2026.</span>
+    </div>
+</div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="yearGrid">
                 <!-- Year cards populated by JS -->
@@ -574,6 +575,11 @@
             const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
             const receiptFileInput = document.getElementById('receiptFile');
             const receiptFile = receiptFileInput.files[0];
+            const tarikhTutup = new Date("2026-09-10T23:59:59").getTime();
+if (new Date().getTime() > tarikhTutup) {
+    alert("Maaf, tempahan telah ditutup pada 10 September 2026.");
+    return;
+}
 
             let price = 12;
             if (selectedPkg === "Pakej B") price = 15;
@@ -581,6 +587,7 @@
 
             const orderId = 'DBHOSS-' + Math.floor(100000 + Math.random() * 900000);
             let receiptName = "Tiada (Tunai)";
+            
 
             const submitBtn = document.getElementById('submitBtn');
             const submitText = document.getElementById('submitText');
