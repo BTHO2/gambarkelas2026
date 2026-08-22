@@ -393,6 +393,16 @@
             populateReportYearDropdown();
         };
 
+        // Lightbox Functions for QR Image Zoom
+        function openImageViewer(imgSrc) {
+            document.getElementById('modalZoomImg').src = imgSrc;
+            document.getElementById('imageViewerModal').classList.remove('hidden');
+        }
+
+        function closeImageViewer() {
+            document.getElementById('imageViewerModal').classList.add('hidden');
+        }
+        
         function renderYearGrid() {
             const grid = document.getElementById('yearGrid');
             grid.innerHTML = '';
