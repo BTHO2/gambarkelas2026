@@ -752,11 +752,6 @@ async function loadAdminDashboard() {
             console.warn("Gagal ambil data dari Google Sheets, menggunakan simpanan lokal:", err);
         }
     }
-
-    // Jika Google Sheets berjaya dapat data, simpan terus ke localStorage sebagai cache terkini
-    if (fetchedData.length > 0) {
-        localStorage.setItem("dbhoss_orders_2026", JSON.stringify(fetchedData));
-    }
     
     // Jika Google Sheets kosong/gagal, guna fallback LocalStorage supaya data tak hilang
     if (fetchedData.length === 0) {
