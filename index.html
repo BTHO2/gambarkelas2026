@@ -292,17 +292,14 @@
                     </div>
                 </div>
 
-               <div class="pt-2 flex justify-between items-center">
-    <h4 class="text-xs font-bold text-slate-700 uppercase">Senarai Tempahan Terkini</h4>
-    <!-- Tambah butang ini -->
-    <button onclick="loadAdminDashboard()" class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">
-        <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
-    </button>
-    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center space-x-1">
-        <i class="fa-solid fa-file-excel"></i>
-        <span>CSV File</span>
-    </button>
-</div>
+                <div class="pt-2 flex justify-between items-center">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase">Senarai Tempahan Terkini</h4>
+                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center space-x-1">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Eksport CSV</span>
+                    </button>
+                </div>
+
                 <div class="border rounded-2xl overflow-hidden max-h-48 overflow-y-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-100 text-slate-700 sticky top-0">
@@ -710,7 +707,7 @@ if (new Date().getTime() > tarikhTutup) {
         function openAdminModal() {
             document.getElementById('adminModal').classList.remove('hidden');
             document.getElementById('adminPassBox').classList.remove('hidden');
-            document.getElementById('Box').classList.add('hidden');
+            document.getElementById('adminDashboardBox').classList.add('hidden');
             document.getElementById('adminPasswordInput').value = '';
             document.getElementById('adminError').classList.add('hidden');
         }
@@ -723,8 +720,8 @@ if (new Date().getTime() > tarikhTutup) {
             const val = document.getElementById('adminPasswordInput').value;
             if (val === ADMIN_PASS) {
                 document.getElementById('adminPassBox').classList.add('hidden');
-                document.getElementById('Box').classList.remove('hidden');
-                load();
+                document.getElementById('adminDashboardBox').classList.remove('hidden');
+                loadAdminDashboard();
             } else {
                 document.getElementById('adminError').classList.remove('hidden');
             }
@@ -750,11 +747,6 @@ async function loadAdminDashboard() {
         } catch (err) {
             console.warn("Gagal ambil data dari Google Sheets, menggunakan simpanan lokal:", err);
         }
-    }
-
-    // Jika Google Sheets berjaya dapat data, simpan terus ke localStorage sebagai cache terkini
-    if (fetchedData.length > 0) {
-        localStorage.setItem("dbhoss_orders_2026", JSON.stringify(fetchedData));
     }
 
     // Jika Google Sheets kosong/gagal, guna fallback LocalStorage supaya data tak hilang
