@@ -908,7 +908,7 @@ function openReceiptInspector(orderId) {
             ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
             const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
 
-            // Kira jumlah pakej berdasarkan data yang telah ditapis (filtered)
+            // Kira jumlah pakej berdasarkan data yang ditapis
             let countPkgA = filtered.filter(ord => ord.package === "Pakej A").length;
             let countPkgB = filtered.filter(ord => ord.package === "Pakej B").length;
             let countPkgC = filtered.filter(ord => ord.package === "Pakej C").length;
@@ -947,23 +947,29 @@ function openReceiptInspector(orderId) {
                 styles: { fontSize: 8 }
             });            
 
-           // Ambil kedudukan Y terakhir selepas jadual siap dilukis
             let finalY = doc.lastAutoTable.finalY + 10;
             
-            // Lukis kotak latar belakang untuk rumusan (Summary Box) supaya nampak kemas
-            doc.setFillColor(241, 245, 249); // Warna kelabu lembut
+            // Lukis kotak latar belakang untuk rumusan (Summary Box)
+            doc.setFillColor(241, 245, 249); 
             doc.roundedRect(14, finalY, 182, 26, 3, 3, 'F');
 
-            // Masukkan teks maklumat kuantiti pakej dan kutipan di dalam kotak
             doc.setTextColor(30, 30, 30);
             doc.setFontSize(9);
-            doc.text(`Jumlah Tempahan: ${filtered.length} orang  |  Pakej A: ${countPkgA} unit  |  Pakej B: ${countPkgB} unit  |  Pakej C: ${countPkgC} unit`, 20, finalY + 8);
+            
+            // Paparan teks pakej mengikut kesesuaian (Jika Tahun 6, paparkan Pakej C sahaja atau ikut data yang ada)
+            let packageSummaryText = `Jumlah Tempahan: ${filtered.length} orang  |  `;
+            if (yr.includes("Tahun 6")) {
+                packageSummaryText += `Pakej C: ${countPkgC} unit`;
+            } else {
+                packageSummaryText += `Pakej A: ${countPkgA} unit  |  Pakej B: ${countPkgB} unit`;
+            }
+
+            doc.text(packageSummaryText, 20, finalY + 8);
             
             doc.setFont(undefined, 'bold');
             doc.setFontSize(10);
             doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
 
-            // Simpan fail PDF
             doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
         }
 
