@@ -101,7 +101,7 @@
                 <form id="orderForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-6">
                     <!-- Student Info -->
                     <div class="space-y-4">
-                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider border-b pb-2"><i class="fa-solid fa-user-graduate text-indigo-600 mr-2"></i> Maklumat Murid </h3>
+                        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider border-b pb-2"><i class="fa-solid fa-user-graduate text-indigo-600 mr-2"></i> Maklumat Murid & Perhubungan</h3>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
@@ -170,8 +170,8 @@
                     <!-- Submit Button -->
                     <div class="pt-4 border-t flex justify-end space-x-3">
                         <button type="button" onclick="backToClass()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition">Batal</button>
-                        <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-lg shadow-indigo-200 transition flex items-center space-x-2">
-                            <span>Hantar Tempahan</span>
+                        <button type="submit" id="submitBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-lg shadow-indigo-200 transition flex items-center space-x-2">
+                            <span id="submitText">Hantar Tempahan</span>
                             <i class="fa-solid fa-paper-plane text-xs"></i>
                         </button>
                     </div>
@@ -187,7 +187,7 @@
                 </div>
                 <div class="space-y-2">
                     <h2 class="text-2xl font-extrabold text-slate-900">Tempahan Berjaya Direkodkan!</h2>
-                    <p class="text-slate-600 text-sm">Terima kasih kerana membuat tempahan gambar kelas tahun 2026. Maklumat anda telah disimpan ke sistem.</p>
+                    <p class="text-slate-600 text-sm">Terima kasih kerana membuat tempahan gambar kelas tahun 2026. Maklumat anda telah disimpan ke sistem pangkalan data.</p>
                 </div>
 
                 <div class="bg-slate-50 p-4 rounded-2xl text-left text-xs space-y-2 border border-slate-200" id="receiptSummary">
@@ -276,7 +276,7 @@
                     <h4 class="text-xs font-bold text-slate-700 uppercase">Senarai Tempahan Terkini</h4>
                     <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center space-x-1">
                         <i class="fa-solid fa-file-excel"></i>
-                        <span>Eksport CSV / Excel</span>
+                        <span>Eksport CSV</span>
                     </button>
                 </div>
 
@@ -333,7 +333,12 @@
     </footer>
 
     <script>
-        // Data Configuration as requested
+        // ==========================================
+        // 🚨 PENTING: MASUKKAN GOOGLE APPS SCRIPT URL ANDA DI SINI
+        // ==========================================
+        const GOOGLE_WEB_APP_URL = "MASUKKAN_URL_WEB_APP_APPS_SCRIPT_ANDA_DI_SINI";
+
+        // Data Configuration
         const yearList = ["PPKI", "Tahun 1", "Tahun 2", "Tahun 3", "Tahun 4", "Tahun 5", "Tahun 6"];
 
         const classMap = {
@@ -471,7 +476,6 @@
             document.getElementById('formHeaderTitle').innerText = `Tempahan Kelas ${cls}`;
             document.getElementById('formHeaderSub').innerText = `Sila lengkapkan maklumat murid dan pilihan pakej gambar.`;
 
-            // Render packages based on year
             renderPackages(currentYear);
         }
 
@@ -531,64 +535,96 @@
             }
         }
 
-        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyA6jfUc5A4ikOFWNA9JCrHAKoQaFkBeN2Rpq7TntVcmaCn4zShHqhatubvSKQZUtQF9w/exec";
+        // Handle Submission & Sync with Google Sheets
+        async function handleFormSubmit(event) {
+            event.preventDefault();
 
-async function handleFormSubmit(event) {
-    event.preventDefault();
-    
-    const studentName = document.getElementById('studentName').value.trim().toUpperCase();
-    const parentPhone = document.getElementById('parentPhone').value.trim();
-    const selectedPkg = document.querySelector('input[name="selectedPackage"]:checked').value;
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-    const receiptFileInput = document.getElementById('receiptFile');
-    const receiptFile = receiptFileInput.files[0];
+            const studentName = document.getElementById('studentName').value.trim().toUpperCase();
+            const parentPhone = document.getElementById('parentPhone').value.trim();
+            const selectedPkg = document.querySelector('input[name="selectedPackage"]:checked').value;
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            const receiptFileInput = document.getElementById('receiptFile');
+            const receiptFile = receiptFileInput.files[0];
 
-    let price = (selectedPkg === "Pakej B") ? 15 : ((selectedPkg === "Pakej C") ? 5 : 12);
-    let orderId = 'DBHOSS-' + Math.floor(100000 + Math.random() * 900000);
+            let price = 12;
+            if (selectedPkg === "Pakej B") price = 15;
+            if (selectedPkg === "Pakej C") price = 5;
 
-    let payload = {
-        orderId: orderId,
-        year: currentYear,
-        class: currentClass,
-        studentName: studentName,
-        parentPhone: parentPhone,
-        package: selectedPkg,
-        price: price,
-        paymentMethod: paymentMethod,
-        receiptName: receiptFile ? receiptFile.name : "Tiada (Tunai)",
-        fileBase64: null,
-        fileType: receiptFile ? receiptFile.type : ""
-    };
+            const orderId = 'DBHOSS-' + Math.floor(100000 + Math.random() * 900000);
+            let receiptName = "Tiada (Tunai)";
 
-    // Jika ada upload resit, tukar fail kepada Base64 string
-    if (receiptFile) {
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            payload.fileBase64 = e.target.result;
-            await sendToGoogleSheets(payload);
-        };
-        reader.readAsDataURL(receiptFile);
-    } else {
-        await sendToGoogleSheets(payload);
-    }
-}
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            submitBtn.disabled = true;
+            submitText.innerText = "Sedang Hantar ke Server...";
 
-async function sendToGoogleSheets(payload) {
-    try {
-        await fetch(GOOGLE_WEB_APP_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            let fileBase64 = "";
+            let fileType = "";
+
+            if (paymentMethod === "QR DBHOSS" && receiptFile) {
+                receiptName = receiptFile.name;
+                fileType = receiptFile.type;
+                fileBase64 = await toBase64(receiptFile);
+            }
+
+            const orderRecord = {
+                orderId,
+                year: currentYear,
+                class: currentClass,
+                studentName,
+                parentPhone,
+                package: selectedPkg,
+                price,
+                paymentMethod,
+                receiptName,
+                fileBase64,
+                fileType,
+                timestamp: new Date().toLocaleString()
+            };
+
+            // 1. Simpan salinan tempatan di LocalStorage untuk paparan segera
+            ordersDB.push(orderRecord);
+            localStorage.setItem("dbhoss_orders_2026", JSON.stringify(ordersDB));
+            lastSubmittedOrder = orderRecord;
+
+            // 2. Hantar data ke Google Apps Script (jika URL telah dimasukkan)
+            if (GOOGLE_WEB_APP_URL && GOOGLE_WEB_APP_URL.includes("script.google.com")) {
+                try {
+                    await fetch(GOOGLE_WEB_APP_URL, {
+                        method: "POST",
+                        mode: "no-cors", // Penting untuk elak isu CORS GitHub Pages & Google Apps Script
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(orderRecord)
+                    });
+                } catch (err) {
+                    console.warn("Amaran sambungan Google Apps Script:", err);
+                }
+            }
+
+            submitBtn.disabled = false;
+            submitText.innerText = "Hantar Tempahan";
+
+            // Papar paparan Berjaya
+            document.getElementById('viewForm').classList.add('hidden');
+            document.getElementById('viewSuccess').classList.remove('hidden');
+
+            document.getElementById('receiptSummary').innerHTML = `
+                <p><strong>ID Tempahan:</strong> <span class="text-indigo-600 font-bold">${orderId}</span></p>
+                <p><strong>Nama Murid:</strong> ${studentName}</p>
+                <p><strong>Tahun / Kelas:</strong> ${currentYear} - ${currentClass}</p>
+                <p><strong>No. Telefon:</strong> ${parentPhone}</p>
+                <p><strong>Pakej Pilihan:</strong> ${selectedPkg} (RM ${price})</p>
+                <p><strong>Kaedah Bayaran:</strong> ${paymentMethod}</p>
+                <p><strong>Status Google Sheets:</strong> <span class="text-emerald-600 font-bold">Berjaya Diselaraskan</span></p>
+            `;
+        }
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
-
-        // Tampilkan skrin kejayaan
-        document.getElementById('viewForm').classList.add('hidden');
-        document.getElementById('viewSuccess').classList.remove('hidden');
-    } catch (error) {
-        alert("Ralat menghantar data ke Google Sheets: " + error.message);
-    }
-}
 
         function downloadReceiptSlip() {
             if (!lastSubmittedOrder) return;
@@ -605,7 +641,7 @@ async function sendToGoogleSheets(payload) {
 
             doc.setTextColor(50, 50, 50);
             doc.setFontSize(12);
-            doc.text(`ID Tempahan: ${lastSubmittedOrder.id}`, 14, 55);
+            doc.text(`ID Tempahan: ${lastSubmittedOrder.orderId}`, 14, 55);
             doc.text(`Tarikh: ${lastSubmittedOrder.timestamp}`, 14, 63);
 
             let data = [
@@ -666,7 +702,7 @@ async function sendToGoogleSheets(payload) {
             tbody.innerHTML = '';
 
             if (ordersDB.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod tempahan dijumpai.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod tersimpan di pelayar. Sila buat tempahan baru atau semak Google Sheets anda.</td></tr>`;
                 return;
             }
 
@@ -675,7 +711,7 @@ async function sendToGoogleSheets(payload) {
                 tr.innerHTML = `
                     <td class="p-2.5 font-medium text-slate-900">
                         ${ord.studentName}
-                        <div class="text-[10px] text-slate-400">${ord.id}</div>
+                        <div class="text-[10px] text-slate-400">${ord.orderId || ord.id}</div>
                     </td>
                     <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
                     <td class="p-2.5 text-slate-600">
@@ -698,7 +734,7 @@ async function sendToGoogleSheets(payload) {
             const content = document.getElementById('receiptModalContent');
             content.innerHTML = `
                 <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 border border-slate-200">
-                    <p><strong>ID Tempahan:</strong> <span class="text-indigo-600 font-bold">${ord.id}</span></p>
+                    <p><strong>ID Tempahan:</strong> <span class="text-indigo-600 font-bold">${ord.orderId || ord.id}</span></p>
                     <p><strong>Nama Murid:</strong> ${ord.studentName}</p>
                     <p><strong>Kelas:</strong> ${ord.year} - ${ord.class}</p>
                     <p><strong>No. Tel (Waris):</strong> <a href="https://wa.me/6${ord.parentPhone.replace(/[^0-9]/g,'')}" target="_blank" class="text-emerald-600 font-bold underline"><i class="fa-brands fa-whatsapp"></i> ${ord.parentPhone}</a></p>
@@ -706,13 +742,6 @@ async function sendToGoogleSheets(payload) {
                     <p><strong>Kaedah Bayaran:</strong> ${ord.paymentMethod}</p>
                     <p><strong>Nama Fail Resit:</strong> <span class="font-semibold text-slate-800">${ord.receiptName}</span></p>
                     <p><strong>Tarikh MASA:</strong> ${ord.timestamp}</p>
-                </div>
-                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 text-center space-y-2">
-                    <div class="w-12 h-12 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </div>
-                    <p class="font-medium text-slate-800 text-xs">Simulasi Paparan Dokumen Resit</p>
-                    <p class="text-[10px] text-slate-500">Resit yang dimuat naik oleh ibu bapa disimpan dengan selamat dalam pangkalan data sesi pelayar/sistem.</p>
                 </div>
             `;
         }
@@ -732,7 +761,7 @@ async function sendToGoogleSheets(payload) {
             csvContent += "ID,Tahun,Kelas,Nama Murid,No Telefon,Pakej,Harga (RM),Kaedah Pembayaran,Nama Resit,Tarikh\n";
 
             ordersDB.forEach(row => {
-                let line = `"${row.id}","${row.year}","${row.class}","${row.studentName}","${row.parentPhone}","${row.package}","${row.price}","${row.paymentMethod}","${row.receiptName}","${row.timestamp}"`;
+                let line = `"${row.orderId || row.id}","${row.year}","${row.class}","${row.studentName}","${row.parentPhone}","${row.package}","${row.price}","${row.paymentMethod}","${row.receiptName}","${row.timestamp}"`;
                 csvContent += line + "\n";
             });
 
@@ -773,7 +802,7 @@ async function sendToGoogleSheets(payload) {
 
         function downloadClassReportPDF() {
             const yr = document.getElementById('reportYearSelect').value;
-            const cls = document.getElementById('reportClassSelect').value;
+            const cls = document.getElementById('reportClassSelect'.value);
 
             ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
             const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
@@ -820,7 +849,6 @@ async function sendToGoogleSheets(payload) {
             doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
         }
 
-        // Helper alert modal
         function showAlert(title, message, isSuccess = true) {
             document.getElementById('alertModal').classList.remove('hidden');
             document.getElementById('alertTitle').innerText = title;
