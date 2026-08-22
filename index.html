@@ -336,7 +336,7 @@
         // ==========================================
         // 🚨 PENTING: MASUKKAN GOOGLE APPS SCRIPT URL ANDA DI SINI
         // ==========================================
-        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-hODx8Q1SYRVW4ax8TlB_XRIZXFDbrSjjsQXq3js7gdEhRv01ckwDW01cukpcKcAhVQ/exec";
+        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzGtn9gs2GpMRW2EnPaOSG0KFP-vD98iKs3o9P_oPHbrR3YPWMGx23GIPPWgq1jqIVaAQ/exec";
 
         // Data Configuration
         const yearList = ["PPKI", "Tahun 1", "Tahun 2", "Tahun 3", "Tahun 4", "Tahun 5", "Tahun 6"];
@@ -802,7 +802,7 @@
 
         function downloadClassReportPDF() {
             const yr = document.getElementById('reportYearSelect').value;
-            const cls = document.getElementById('reportClassSelect'.value);
+            const cls = document.getElementById('reportClassSelect'.value;
 
             ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
             const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
