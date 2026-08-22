@@ -735,67 +735,128 @@ if (new Date().getTime() > tarikhTutup) {
         // 🔄 FUNGSI ADMIN: AMBIL DATA TERUS DARI GOOGLE SHEETS
         // ==========================================
 async function loadAdminDashboard() {
+
     const tbody = document.getElementById('adminTableBody');
+
     tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Sedang memuat turun data...</td></tr>`;
+
+
 
     let fetchedData = [];
 
+
+
     // Cuba ambil data dari Google Sheets
+
     if (GOOGLE_WEB_APP_URL && GOOGLE_WEB_APP_URL.includes("script.google.com")) {
+
         try {
+
             let response = await fetch(GOOGLE_WEB_APP_URL);
+
             let result = await response.json();
+
             if (Array.isArray(result)) {
+
                 fetchedData = result;
+
             }
+
         } catch (err) {
+
             console.warn("Gagal ambil data dari Google Sheets, menggunakan simpanan lokal:", err);
+
         }
-    }
-    
-    // Jika Google Sheets kosong/gagal, guna fallback LocalStorage supaya data tak hilang
-    if (fetchedData.length === 0) {
-        fetchedData = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
+
     }
 
+
+
+    // Jika Google Sheets kosong/gagal, guna fallback LocalStorage supaya data tak hilang
+
+    if (fetchedData.length === 0) {
+
+        fetchedData = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
+
+    }
+
+
+
     // Tetapkan nilai global ordersDB
+
     ordersDB = fetchedData;
+
     
+
     document.getElementById('statTotalOrders').innerText = ordersDB.length;
+
     let totalAmount = ordersDB.reduce((sum, item) => sum + Number(item.price || 0), 0);
+
     document.getElementById('statTotalAmount').innerText = `RM ${totalAmount}`;
+
+
 
     tbody.innerHTML = '';
 
+
+
     if (ordersDB.length === 0) {
+
         tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod tersimpan.</td></tr>`;
+
         return;
+
     }
 
+
+
     ordersDB.slice(-15).reverse().forEach(ord => {
+
         let tr = document.createElement('tr');
+
         // Pastikan kita simpan ID yang konsisten (orderId atau id)
+
         let uniqueId = ord.orderId || ord.id;
+
         tr.innerHTML = `
+
             <td class="p-2.5 font-medium text-slate-900">
+
                 ${ord.studentName}
+
                 <div class="text-[10px] text-slate-400">${uniqueId}</div>
+
             </td>
+
             <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
+
             <td class="p-2.5 text-slate-600">
+
                 <span class="font-bold text-indigo-700">${ord.paymentMethod}</span>
+
                 <div class="text-[10px] text-slate-500 truncate max-w-[120px]" title="${ord.receiptName}">${ord.receiptName}</div>
+
             </td>
+
             <td class="p-2.5 text-center">
+
                 <button onclick="openReceiptInspector('${uniqueId}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-lg font-medium text-[11px] transition inline-flex items-center space-x-1">
+
                     <i class="fa-solid fa-eye"></i>
+
                     <span>Semak</span>
+
                 </button>
+
             </td>
+
         `;
+
         tbody.appendChild(tr);
+
     });
-}
+
+} 
 
   // Gantikan fungsi ini di dalam bahagian <script>
 function openReceiptInspector(orderId) {
