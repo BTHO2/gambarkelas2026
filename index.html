@@ -802,7 +802,7 @@
 
         function downloadClassReportPDF() {
             const yr = document.getElementById('reportYearSelect').value;
-            const cls = document.getElementById('reportClassSelect'.value);
+    const cls = document.getElementById('reportClassSelect').value; // Pastikan .value di luar kurungan
 
             ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
             const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
