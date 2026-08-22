@@ -33,7 +33,7 @@
             <div class="flex items-center space-x-2">
                 <button onclick="openAdminModal()" class="bg-indigo-800 hover:bg-indigo-700 text-amber-300 px-3 py-2 rounded-xl text-sm font-medium border border-indigo-700 transition flex items-center space-x-2 shadow">
                     <i class="fa-solid fa-lock"></i>
-                    <span class="hidden sm:inline">Admin Rumusan</span>
+                    <span class="hidden sm:inline">Admin</span>
                 </button>
             </div>
         </div>
@@ -802,7 +802,7 @@
 
         function downloadClassReportPDF() {
             const yr = document.getElementById('reportYearSelect').value;
-            const cls = document.getElementById('reportClassSelect'.value;
+            const cls = document.getElementById('reportClassSelect'.value);
 
             ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
             const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
