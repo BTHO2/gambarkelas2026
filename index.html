@@ -689,18 +689,35 @@
             }
         }
 
-        function loadAdminDashboard() {
-            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
+    // ==========================================
+        // 🔄 FUNGSI ADMIN: AMBIL DATA TERUS DARI GOOGLE SHEETS
+        // ==========================================
+        async function loadAdminDashboard() {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Sedang memuat turun data terkini dari Google Sheets...</td></tr>`;
+
+            ordersDB = [];
+
+            if (GOOGLE_WEB_APP_URL && GOOGLE_WEB_APP_URL.includes("script.google.com")) {
+                try {
+                    let response = await fetch(GOOGLE_WEB_APP_URL);
+                    let result = await response.json();
+                    if (Array.isArray(result)) {
+                        ordersDB = result;
+                    }
+                } catch (err) {
+                    console.warn("Gagal ambil data dari Google Sheets via doGet:", err);
+                }
+            }
             
             document.getElementById('statTotalOrders').innerText = ordersDB.length;
-            let totalAmount = ordersDB.reduce((sum, item) => sum + item.price, 0);
+            let totalAmount = ordersDB.reduce((sum, item) => sum + Number(item.price || 0), 0);
             document.getElementById('statTotalAmount').innerText = `RM ${totalAmount}`;
 
-            const tbody = document.getElementById('adminTableBody');
             tbody.innerHTML = '';
 
             if (ordersDB.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod tersimpan di pelayar. Sila buat tempahan baru atau semak Google Sheets anda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod dijumpai atau URL Apps Script belum disambungkan.</td></tr>`;
                 return;
             }
 
@@ -709,7 +726,7 @@
                 tr.innerHTML = `
                     <td class="p-2.5 font-medium text-slate-900">
                         ${ord.studentName}
-                        <div class="text-[10px] text-slate-400">${ord.orderId || ord.id}</div>
+                        <div class="text-[10px] text-slate-400">${ord.orderId}</div>
                     </td>
                     <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
                     <td class="p-2.5 text-slate-600">
