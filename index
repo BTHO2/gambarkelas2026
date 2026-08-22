@@ -22,9 +22,7 @@
         </div>
 
         <!-- Paparan Utama: Senarai Tahun -->
-        <div id="mainView" class="row g-4 justify-content-center">
-            <!-- Dinamik dari JS -->
-        </div>
+        <div id="mainView" class="row g-4 justify-content-center"></div>
 
         <!-- Paparan Borang Tempahan -->
         <div id="formView" class="card shadow p-4 mt-4" style="display: none;">
@@ -53,10 +51,9 @@
                     </select>
                 </div>
 
-                <!-- Info QR -->
                 <div id="qrInfoSection" class="mb-3 p-3 bg-light border rounded" style="display: none;">
                     <p class="fw-bold mb-1">Sila buat bayaran ke Akaun DBHOSS Familia dan muat naik resit:</p>
-                    <p class="text-muted small mb-2">[ Paparan QR Code Akaun DBHOSS Familia di sini ]</p>
+                    <p class="text-muted small mb-2">[ QR Code Akaun DBHOSS Familia ]</p>
                     <label class="form-label fw-bold">Muat Naik Resit (PDF / JPG)</label>
                     <input type="file" id="resitFile" class="form-control" accept=".pdf, .jpg, .jpeg">
                 </div>
@@ -97,15 +94,7 @@
                     </div>
                     <div id="adminPanelSection" style="display: none;">
                         <h6 class="text-success fw-bold mb-3"><i class="fas fa-check"></i> Log Masuk Sah</h6>
-                        <div class="mb-3">
-                            <label class="form-label">Pilih Tahun</label>
-                            <select id="adminTahunSelect" class="form-select" onchange="updateAdminKelasList()"></select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Pilih Kelas untuk Muat Turun Rumusan PDF</label>
-                            <select id="adminKelasSelect" class="form-select"></select>
-                        </div>
-                        <button class="btn btn-danger w-100" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> Muat Turun Rumusan PDF</button>
+                        <p class="text-muted small">Semak data rumusan terus di dalam fail Google Sheets anda menggunakan tab kelas masing-masing.</p>
                     </div>
                 </div>
             </div>
@@ -113,17 +102,23 @@
     </div>
 
     <script>
+        // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI:
+        const SCRIPT_URL = "MASUKKAN_URL_WEB_APP_ANDA_DI_SINI";
+
         let globalKelasData = {};
         let selectedYear = "";
-        let selectedPackageData = null;
-
         const years = ["PPKI", "Tahun 1", "Tahun 2", "Tahun 3", "Tahun 4", "Tahun 5", "Tahun 6"];
 
         window.onload = function() {
-            google.script.run.withSuccessHandler(function(data) {
-                globalKelasData = data;
-                renderYearCards();
-            }).getKelasList();
+            fetch(SCRIPT_URL + "?action=getKelas")
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        globalKelasData = data.kelasList;
+                        renderYearCards();
+                    }
+                })
+                .catch(err => console.error("Ralat memuatkan data:", err));
         };
 
         function renderYearCards() {
@@ -150,20 +145,18 @@
             document.getElementById("formView").style.display = "block";
             document.getElementById("formTitle").innerText = `Tempahan Pakej Gambar - ${tahun}`;
 
-            // Isi dropdown kelas
             const kelasSelect = document.getElementById("kelasSelect");
             kelasSelect.innerHTML = "";
             globalKelasData[tahun].forEach(kelas => {
                 kelasSelect.innerHTML += `<option value="${kelas}">${kelas}</option>`;
             });
 
-            // Tetapkan pilihan pakej berdasarkan tahun
             const pakejContainer = document.getElementById("pakejContainer");
             pakejContainer.innerHTML = "";
             if (tahun === "Tahun 6") {
                 pakejContainer.innerHTML = `
                     <div class="form-check border p-3 rounded mb-2">
-                        <input class="form-check-input" type="radio" name="pakej" value="Pakej C - Gambar Freestyle bersaiz 5R (RM 5)" data-harga="5" required onchange="updatePrice()">
+                        <input class="form-check-input" type="radio" name="pakej" value="Pakej C - Gambar Freestyle bersaiz 5R (RM 5)" data-harga="5" required>
                         <label class="form-check-label fw-bold">Pakej C - Gambar Freestyle bersaiz 5R</label>
                         <div class="text-primary">Harga: RM 5.00</div>
                     </div>
@@ -171,12 +164,12 @@
             } else {
                 pakejContainer.innerHTML = `
                     <div class="form-check border p-3 rounded mb-2">
-                        <input class="form-check-input" type="radio" name="pakej" value="Pakej A - Gambar formal bersaiz A4 (RM 12)" data-harga="12" required onchange="updatePrice()">
+                        <input class="form-check-input" type="radio" name="pakej" value="Pakej A - Gambar formal bersaiz A4 (RM 12)" data-harga="12" required>
                         <label class="form-check-label fw-bold">Pakej A - Gambar formal bersaiz A4</label>
                         <div class="text-primary">Harga: RM 12.00</div>
                     </div>
                     <div class="form-check border p-3 rounded mb-2">
-                        <input class="form-check-input" type="radio" name="pakej" value="Pakej B - Gambar formal A4 & Freestyle 5R (RM 24)" data-harga="24" required onchange="updatePrice()">
+                        <input class="form-check-input" type="radio" name="pakej" value="Pakej B - Gambar formal A4 & Freestyle 5R (RM 24)" data-harga="24" required>
                         <label class="form-check-label fw-bold">Pakej B - Gambar formal bersaiz A4 (RM 12) & Gambar Freestyle bersaiz 5R (RM 12)</label>
                         <div class="text-primary">Harga: RM 24.00</div>
                     </div>
@@ -221,8 +214,7 @@
                 const file = fileInput.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const content = e.target.result.split(",")[1];
-                    formData.fileData = content;
+                    formData.fileData = e.target.result.split(",")[1];
                     formData.fileName = file.name;
                     formData.fileMimeType = file.type;
                     sendDataToServer(formData);
@@ -234,19 +226,22 @@
         }
 
         function sendDataToServer(formData) {
-            Swal ? Swal.fire({title: 'Sedang menghantar...', allowOutsideClick: false, didOpen: () => {Swal.showLoading();}}) : null;
-            google.script.run.withSuccessHandler(function(response) {
-                if (response.success) {
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
                     document.getElementById("formView").style.display = "none";
                     document.getElementById("successView").style.display = "block";
-                    if(Swal) Swal.close();
                 } else {
-                    alert("Ralat: " + response.message);
+                    alert("Ralat: " + res.message);
                 }
-            }).submitOrder(formData);
+            })
+            .catch(err => alert("Gagal menghantar data: " + err));
         }
 
-        // Admin Functions
         function openAdminModal() {
             var myModal = new bootstrap.Modal(document.getElementById('adminModal'));
             myModal.show();
@@ -254,51 +249,18 @@
 
         function verifyAdmin() {
             const pwd = document.getElementById("adminPassword").value;
-            google.script.run.withSuccessHandler(function(res) {
-                if (res.success) {
-                    document.getElementById("loginSection").style.display = "none";
-                    document.getElementById("adminPanelSection").style.display = "block";
-                    
-                    const adminTahunSelect = document.getElementById("adminTahunSelect");
-                    adminTahunSelect.innerHTML = "";
-                    years.forEach(t => {
-                        adminTahunSelect.innerHTML += `<option value="${t}">${t}</option>`;
-                    });
-                    updateAdminKelasList();
-                } else {
-                    alert(res.message);
-                }
-            }).verifyAdminAndGetData(pwd);
-        }
-
-        function updateAdminKelasList() {
-            const tahun = document.getElementById("adminTahunSelect").value;
-            const adminKelasSelect = document.getElementById("adminKelasSelect");
-            adminKelasSelect.innerHTML = "";
-            if (globalKelasData[tahun]) {
-                globalKelasData[tahun].forEach(k => {
-                    adminKelasSelect.innerHTML += `<option value="${k}">${k}</option>`;
+            fetch(SCRIPT_URL + `?action=verifyAdmin&password=${pwd}`)
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        document.getElementById("loginSection").style.display = "none";
+                        document.getElementById("adminPanelSection").style.display = "block";
+                    } else {
+                        alert(res.message);
+                    }
                 });
-            }
-        }
-
-        function downloadPDF() {
-            const tahun = document.getElementById("adminTahunSelect").value;
-            const kelas = document.getElementById("adminKelasSelect").value;
-
-            google.script.run.withSuccessHandler(function(res) {
-                if (res.success) {
-                    const link = document.createElement('a');
-                    link.href = 'data:application/pdf;base64,' + res.base64Data;
-                    link.download = res.fileName;
-                    link.click();
-                } else {
-                    alert("Ralat menjana PDF: " + res.message);
-                }
-            }).generateClassPDF(tahun, kelas);
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
