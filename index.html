@@ -690,43 +690,60 @@
         }
 
         function loadAdminDashboard() {
-            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
-            
-            document.getElementById('statTotalOrders').innerText = ordersDB.length;
-            let totalAmount = ordersDB.reduce((sum, item) => sum + item.price, 0);
-            document.getElementById('statTotalAmount').innerText = `RM ${totalAmount}`;
+            // Papar mesej loading sementara menunggu data dari Google Sheets
+    const tbody = document.getElementById('adminTableBody');
+    tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Sedang memuat turun data terkini dari Google Sheets...</td></tr>`;
 
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '';
-
-            if (ordersDB.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod tersimpan di pelayar. Sila buat tempahan baru atau semak Google Sheets anda.</td></tr>`;
-                return;
+    if (GOOGLE_WEB_APP_URL && GOOGLE_WEB_APP_URL.includes("script.google.com")) {
+        try {
+            let response = await fetch(GOOGLE_WEB_APP_URL);
+            let result = await response.json();
+            if (Array.isArray(result)) {
+                ordersDB = result;
+                // Kemas kini simpanan lokal supaya sepadan
+                localStorage.setItem("dbhoss_orders_2026", JSON.stringify(ordersDB));
             }
-
-            ordersDB.slice(-15).reverse().forEach(ord => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-2.5 font-medium text-slate-900">
-                        ${ord.studentName}
-                        <div class="text-[10px] text-slate-400">${ord.orderId || ord.id}</div>
-                    </td>
-                    <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
-                    <td class="p-2.5 text-slate-600">
-                        <span class="font-bold text-indigo-700">${ord.paymentMethod}</span>
-                        <div class="text-[10px] text-slate-500 truncate max-w-[120px]" title="${ord.receiptName}">${ord.receiptName}</div>
-                    </td>
-                    <td class="p-2.5 text-center">
-                        <button onclick='openReceiptInspector(${JSON.stringify(ord)})' class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-lg font-medium text-[11px] transition inline-flex items-center space-x-1">
-                            <i class="fa-solid fa-eye"></i>
-                            <span>Semak</span>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        } catch (err) {
+            console.warn("Gagal ambil data dari Google Sheets, guna data lokal:", err);
+            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
         }
+    } else {
+        ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
+    }
+    
+    document.getElementById('statTotalOrders').innerText = ordersDB.length;
+    let totalAmount = ordersDB.reduce((sum, item) => sum + Number(item.price || 0), 0);
+    document.getElementById('statTotalAmount').innerText = `RM ${totalAmount}`;
 
+    tbody.innerHTML = '';
+
+    if (ordersDB.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod tersimpan di Google Sheets.</td></tr>`;
+        return;
+    }
+
+    ordersDB.slice(-15).reverse().forEach(ord => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="p-2.5 font-medium text-slate-900">
+                ${ord.studentName}
+                <div class="text-[10px] text-slate-400">${ord.orderId}</div>
+            </td>
+            <td class="p-2.5 text-slate-600">${ord.year}<br><span class="font-semibold">${ord.class}</span></td>
+            <td class="p-2.5 text-slate-600">
+                <span class="font-bold text-indigo-700">${ord.paymentMethod}</span>
+                <div class="text-[10px] text-slate-500 truncate max-w-[120px]" title="${ord.receiptName}">${ord.receiptName}</div>
+            </td>
+            <td class="p-2.5 text-center">
+                <button onclick='openReceiptInspector(${JSON.stringify(ord)})' class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-lg font-medium text-[11px] transition inline-flex items-center space-x-1">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Semak</span>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
         function openReceiptInspector(ord) {
             document.getElementById('receiptModal').classList.remove('hidden');
             const content = document.getElementById('receiptModalContent');
