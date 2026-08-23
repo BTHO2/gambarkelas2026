@@ -21,8 +21,9 @@
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
 
-    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50">
+<header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Tajuk & Logo Kiri -->
             <div class="flex items-center space-x-3 cursor-pointer" onclick="resetToHome()">
                 <div class="bg-green-500 p-2.5 rounded-xl text-amber-400 text-xl shadow-inner">
                     <span class="text-xl">📸</span>
@@ -32,10 +33,15 @@
                     <p class="text-xs text-indigo-200">Sistem Pengurusan Gambar Kelas 2026</p>
                 </div>
             </div>
+            
+            <!-- Kumpulan Butang Di Kanan (Admin & Portal Guru) -->
             <div class="flex items-center space-x-2">
                 <button onclick="openAdminModal()" class="bg-indigo-800 hover:bg-indigo-700 text-amber-300 px-3 py-2 rounded-xl text-sm font-medium border border-indigo-700 transition flex items-center space-x-2 shadow">
                     <i class="fa-solid fa-lock"></i>
                     <span class="hidden sm:inline">Admin</span>
+                </button>
+                <button onclick="bukaLoginGuru()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow">
+                    <span>👨‍🏫</span> <span class="hidden sm:inline">Portal Guru</span>
                 </button>
             </div>
         </div>
@@ -269,9 +275,7 @@
                 </form>
             </div>
         </div>
-<button onclick="bukaLoginGuru()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow">
-    <span>👨‍🏫</span> Portal Guru Kelas
-</button>
+
         <!-- VIEW 4: SUCCESS CONFIRMATION -->
         <div id="viewSuccess" class="space-y-6 hidden max-w-xl mx-auto text-center py-8">
             <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 space-y-6">
@@ -451,7 +455,7 @@
         // ==========================================
         // 🚨 PENTING: MASUKKAN GOOGLE APPS SCRIPT URL ANDA DI SINI
         // ==========================================
-        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyPew2EK-uxiHtUm5MXRpfzvUZ5p_7sq0p0KPmJE4nzjTjTtw1svPFWqdF7Z4UO1PRtyw/exec";
+        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpdmeWV7SazyZVG5clkN2HKZ1-cvYZuJbftvNKKYjC-VSPctd6KnXYwRhUYRmjL0tKzQ/exec";
 
         // Data Configuration
         const yearList = ["PPKI", "Tahun 1", "Tahun 2", "Tahun 3", "Tahun 4", "Tahun 5", "Tahun 6"];
@@ -1342,12 +1346,18 @@ function hantarSusunanKeGoogleSheets() {
     }
 
     if (!barisHadapan && !barisTengah && !barisBelakang) {
-        alert("Sila masukkan sekurang-kurangnya satu nama murid.");
+        alert("Sila masukkan sekurang-kurangnya satu senarai nama murid.");
         return;
     }
 
-    // Guna URL Web App Google Apps Script anda yang sedia ada
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyPew2EK-uxiHtUm5MXRpfzvUZ5p_7sq0p0KPmJE4nzjTjTtw1svPFWqdF7Z4UO1PRtyw/exec"; 
+    // Tukar butang jadi mod sedang hantar (Loading) supaya guru tahu sistem sedang bekerja
+    const btnSimpan = event.target;
+    const teksAsal = btnSimpan.innerHTML;
+    btnSimpan.disabled = true;
+    btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyimpan...`;
+
+    // Ganti dengan URL Google Apps Script Web App anda yang sebenar
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzpdmeWV7SazyZVG5clkN2HKZ1-cvYZuJbftvNKKYjC-VSPctd6KnXYwRhUYRmjL0tKzQ/exec"; 
 
     const payload = {
         action: "simpanSusunanMurid",
@@ -1358,8 +1368,6 @@ function hantarSusunanKeGoogleSheets() {
         barisBelakang: barisBelakang
     };
 
-    alert("Menghantar data susunan murid ke Google Sheets...");
-
     fetch(scriptURL, {
         method: 'POST',
         mode: 'no-cors',
@@ -1367,14 +1375,23 @@ function hantarSusunanKeGoogleSheets() {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        alert("Berjaya! Susunan murid telah disimpan ke Google Sheets tab 'Susunan_Murid'.");
+        // Kembalikan butang asal
+        btnSimpan.disabled = false;
+        btnSimpan.innerHTML = teksAsal;
+
+        // Notifikasi berjaya yang lebih jelas & mesra pengguna
+        alert(`✅ BERJAYA!\n\nSusunan nama murid bagi kelas ${yr} - ${cls} telah berjaya disimpan ke Google Sheets (Tab: Susunan_Murid).`);
+        
+        // Kosongkan semula ruang teks selepas berjaya simpan
         document.getElementById('inputBarisHadapan').value = '';
         document.getElementById('inputBarisTengah').value = '';
         document.getElementById('inputBarisBelakang').value = '';
     })
     .catch(error => {
-        console.error('Error!', error.message);
-        alert("Gagal menghantar data. Sila semak sambungan internet.");
+        console.error('Error!', error);
+        btnSimpan.disabled = false;
+        btnSimpan.innerHTML = teksAsal;
+        alert("❌ GAGAL! Terdapat ralat rangkaian. Sila cuba sekali lagi.");
     });
 }
     </script>
