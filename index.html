@@ -989,7 +989,7 @@ function downloadMasterAdminReportPDF() {
             doc.rect(0, 0, 297, 35, 'F');
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(14);
-            doc.text("RUMUSAN KESELURUHAN TEMPAHAN & KUTIPAN KELAS", 14, 15);
+            doc.text("RUMUSAN KESELURUHAN TEMPAHAN GAMBAR KELAS TAHUN 2026", 14, 15);
             doc.setFontSize(10);
             doc.text(`SK Bandar Tun Hussein Onn 2 (SKBTHO2) | Tarikh Cetakan: ${new Date().toLocaleDateString()}`, 14, 25);
 
@@ -1099,7 +1099,7 @@ function downloadMasterAdminReportPDF() {
                 }
             });
 
-            doc.save(`Rumusan_Master_Gambar_Kelas_2026.pdf`);
+            doc.save(`Rumusan_Master_Gambar_Kelas_SKBTHO22026.pdf`);
         }
         
         function showAlert(title, message, isSuccess = true) {
