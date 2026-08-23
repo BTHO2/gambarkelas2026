@@ -65,6 +65,21 @@
                 <p class="text-slate-600 text-sm">Pilih kategori tahun murid untuk meneruskan tempahan pakej gambar kelas.</p>
             </div>
 
+            <!-- Bahagian Dashboard Senarai Kelas Yang Telah Hantar -->
+<div class="mt-4 pt-4 border-t border-slate-200 space-y-2">
+    <div class="flex justify-between items-center">
+        <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Senarai Kelas Selesai Penghantaran Nama
+        </h4>
+        <button onclick="muatSenaraiTelahHantar()" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold underline">
+            Muat Semula
+        </button>
+    </div>
+    
+    <div id="senaraiKelasHantarContainer" class="bg-slate-50 rounded-xl p-3 border border-slate-200 max-h-36 overflow-y-auto space-y-1.5">
+        <p class="text-xs text-slate-400 italic text-center py-2">Sedang memuatkan senarai...</p>
+    </div>
+</div>
         <!-- Quick Announcement banner -->
 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-start space-x-3 text-xs text-amber-900 shadow-sm max-w-4xl mx-auto">
     <div class="bg-amber-100 text-amber-700 p-2 rounded-xl mt-0.5">
@@ -1323,6 +1338,8 @@ function bukaPortalGuru() {
     }
     document.getElementById('guruClassSelect').innerHTML = '<option value="">-- Pilih Kelas --</option>';
     document.getElementById('containerPreviewGambar').innerHTML = '<p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>';
+
+    muatSenaraiTelahHantar();
 }
 
 function tutupPortalGuru() {
