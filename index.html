@@ -166,7 +166,7 @@
         <!-- Butang Simpan -->
         <div class="flex justify-end gap-2 pt-2 border-t">
             <button onclick="tutupPortalGuru()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl">Tutup</button>
-            <button onclick="hantarSusunanKeGoogleSheets()" class="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow">Simpan & Hantar ke Sheets</button>
+            <button onclick="hantarSusunanKeGoogleSheets()" class="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow">Hantar</button>
         </div>
     </div>
 </div>
@@ -1341,23 +1341,23 @@ function hantarSusunanKeGoogleSheets() {
     const barisBelakang = document.getElementById('inputBarisBelakang').value.trim();
 
     if (!yr || !cls) {
-        alert("Sila pilih Tahun dan Kelas terlebih dahulu!");
+        tunjukkanNotifikasiGagal("Sila pilih Tahun dan Kelas terlebih dahulu!");
         return;
     }
 
     if (!barisHadapan && !barisTengah && !barisBelakang) {
-        alert("Sila masukkan sekurang-kurangnya satu senarai nama murid.");
+        tunjukkanNotifikasiGagal("Sila masukkan sekurang-kurangnya satu senarai nama murid.");
         return;
     }
 
-    // Tukar butang jadi mod sedang hantar (Loading) supaya guru tahu sistem sedang bekerja
+    // Tukar butang jadi mod sedang hantar (Loading)
     const btnSimpan = event.target;
     const teksAsal = btnSimpan.innerHTML;
     btnSimpan.disabled = true;
-    btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyimpan...`;
+    btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sedang Menyimpan...`;
 
     // Ganti dengan URL Google Apps Script Web App anda yang sebenar
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzpdmeWV7SazyZVG5clkN2HKZ1-cvYZuJbftvNKKYjC-VSPctd6KnXYwRhUYRmjL0tKzQ/exec"; 
+    const scriptURL = "PAKAN_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI"; 
 
     const payload = {
         action: "simpanSusunanMurid",
@@ -1379,10 +1379,10 @@ function hantarSusunanKeGoogleSheets() {
         btnSimpan.disabled = false;
         btnSimpan.innerHTML = teksAsal;
 
-        // Notifikasi berjaya yang lebih jelas & mesra pengguna
-        alert(`✅ BERJAYA!\n\nSusunan nama murid bagi kelas ${yr} - ${cls} telah berjaya disimpan ke Google Sheets (Tab: Susunan_Murid).`);
+        // Panggil paparan modal berjaya yang cantik ala tempahan
+        tunjukkanNotifikasiBerjaya(yr, cls);
         
-        // Kosongkan semula ruang teks selepas berjaya simpan
+        // Kosongkan semula ruang teks
         document.getElementById('inputBarisHadapan').value = '';
         document.getElementById('inputBarisTengah').value = '';
         document.getElementById('inputBarisBelakang').value = '';
@@ -1391,8 +1391,62 @@ function hantarSusunanKeGoogleSheets() {
         console.error('Error!', error);
         btnSimpan.disabled = false;
         btnSimpan.innerHTML = teksAsal;
-        alert("❌ GAGAL! Terdapat ralat rangkaian. Sila cuba sekali lagi.");
+        tunjukkanNotifikasiGagal("Terdapat ralat rangkaian. Sila cuba sekali lagi.");
     });
+}
+
+// Fungsi Modal Notifikasi Berjaya yang Cantik
+function tunjukkanNotifikasiBerjaya(yr, cls) {
+    // Tutup portal guru dulu atau terus timbulkan modal kejayaan
+    const modalExist = document.getElementById('modalNotifBerjaya');
+    if (modalExist) modalExist.remove();
+
+    const notifHTML = `
+        <div id="modalNotifBerjaya" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 animate-fade-in">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl text-center space-y-4">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">Berjaya Disimpan!</h3>
+                    <p class="text-xs text-slate-500 mt-1">Susunan nama murid bagi kelas <span class="font-bold text-slate-700">${yr} - ${cls}</span> telah berjaya direkodkan ke Google Sheets (Tab: Susunan_Murid).</p>
+                </div>
+                <button onclick="tutupNotifBerjaya()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow transition">
+                    OK, Selesai
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', notifHTML);
+}
+
+function tutupNotifBerjaya() {
+    const modal = document.getElementById('modalNotifBerjaya');
+    if (modal) modal.remove();
+}
+
+// Fungsi Modal Notifikasi Gagal
+function tunjukkanNotifikasiGagal(pesan) {
+    const modalExist = document.getElementById('modalNotifGagal');
+    if (modalExist) modalExist.remove();
+
+    const notifHTML = `
+        <div id="modalNotifGagal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl text-center space-y-4">
+                <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">Perhatian</h3>
+                    <p class="text-xs text-slate-500 mt-1">${pesan}</p>
+                </div>
+                <button onclick="document.getElementById('modalNotifGagal').remove()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold rounded-xl shadow transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', notifHTML);
 }
     </script>
 </body>
