@@ -1582,7 +1582,36 @@ function tutupNotifBerjaya() {
         muatSenaraiTelahHantar();
     }
 }
-        
+        function bukaZoomGambar(url, tajuk) {
+    // Wujudkan modal zum secara automatik jika belum ada
+    let zoomModal = document.getElementById('zoomModal');
+    if (!zoomModal) {
+        zoomModal = document.createElement('div');
+        zoomModal.id = 'zoomModal';
+        zoomModal.className = 'fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center p-4';
+        zoomModal.innerHTML = `
+            <div class="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+                <button onclick="tutupZoomGambar()" class="absolute -top-10 right-0 text-white text-2xl font-bold hover:text-slate-300">&times; Tutup</button>
+                <h3 id="zoomTitle" class="text-white text-sm font-semibold mb-2"></h3>
+                <div class="overflow-auto max-h-[80vh] w-full flex justify-center">
+                    <img id="zoomImg" src="" class="rounded-lg shadow-2xl object-contain max-w-none" />
+                </div>
+            </div>
+        `;
+        document.body.appendChild(zoomModal);
+    }
+    
+    document.getElementById('zoomTitle').innerText = tajuk;
+    document.getElementById('zoomImg').src = url;
+    zoomModal.classList.remove('hidden');
+}
+
+function tutupZoomGambar() {
+    const zoomModal = document.getElementById('zoomModal');
+    if (zoomModal) {
+        zoomModal.classList.add('hidden');
+    }
+}
 // Fungsi Modal Notifikasi Gagal
 function tunjukkanNotifikasiGagal(pesan) {
     const modalExist = document.getElementById('modalNotifGagal');
