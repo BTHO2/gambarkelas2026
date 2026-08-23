@@ -145,67 +145,83 @@
             <button onclick="tutupPortalGuru()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
         </div>
 
-        <!-- Pilihan Tahun & Kelas -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Tahun:</label>
-                <select id="guruYearSelect" onchange="populateGuruClassDropdown()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
-                </select>
+        <!-- TAB NAVIGATION (BUTANG PILIHAN TAB) -->
+        <div class="flex border-b border-slate-200 px-1">
+            <button type="button" onclick="tukarTab('tabIsi')" id="btnTabIsi" class="flex-1 py-2 text-xs font-bold text-emerald-600 border-b-2 border-emerald-600 transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-pen-to-square"></i> 1. Isi Susunan Nama
+            </button>
+            <button type="button" onclick="tukarTab('tabSemak')" id="btnTabSemak" class="flex-1 py-2 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-clipboard-check"></i> 2. Semak Status Kelas
+            </button>
+        </div>
+
+        <!-- TAB 1: KANDUNGAN BORANG PENGISIAN -->
+        <div id="contentTabIsi" class="space-y-4">
+            <!-- Pilihan Tahun & Kelas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Tahun:</label>
+                    <select id="guruYearSelect" onchange="populateGuruClassDropdown()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Kelas:</label>
+                    <select id="guruClassSelect" onchange="muatTurunPreviewKelas()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </select>
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Kelas:</label>
-                <select id="guruClassSelect" onchange="muatTurunPreviewKelas()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
-                </select>
+
+            <!-- Bahagian Preview Gambar Imgur -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center space-y-2">
+                <span class="text-xs font-bold text-slate-600 uppercase">Preview Reka Letak Gambar Kelas</span>
+                <div id="containerPreviewGambar" class="flex justify-center items-center min-h-[160px] bg-slate-200 rounded-lg overflow-hidden border">
+                    <p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas untuk melihat preview gambar.</p>
+                </div>
+            </div>
+
+            <!-- Borang Masukkan Nama Murid Mengikut Baris -->
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold text-slate-700 uppercase">Susunan Nama Murid</h4>
+                
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Hadapan:</label>
+                    <textarea id="inputBarisHadapan" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: AHMAD ALI, SITI AISYAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Tengah:</label>
+                    <textarea id="inputBarisTengah" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: MOHD RIZAL, NUR FARAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Belakang:</label>
+                    <textarea id="inputBarisBelakang" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: CHONG WEI, MUTHU" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
             </div>
         </div>
 
-        <!-- Bahagian Preview Gambar Imgur -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center space-y-2">
-            <span class="text-xs font-bold text-slate-600 uppercase">Preview Reka Letak Gambar Kelas</span>
-            <div id="containerPreviewGambar" class="flex justify-center items-center min-h-[160px] bg-slate-200 rounded-lg overflow-hidden border">
-                <p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>
-            </div>
-        </div>
-
-        <!-- Borang Masukkan Nama Murid Mengikut Baris -->
-        <div class="space-y-3">
-            <h4 class="text-xs font-bold text-slate-700 uppercase">Susunan Nama Murid (Auto Huruf Besar)</h4>
-            
-            <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Baris Hadapan:</label>
-                <textarea id="inputBarisHadapan" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: AHMAD ALI, SITI AISYAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
-            </div>
-
-            <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Baris Tengah:</label>
-                <textarea id="inputBarisTengah" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: MOHD RIZAL, NUR FARAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
-            </div>
-
-            <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Baris Belakang:</label>
-                <textarea id="inputBarisBelakang" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: CHONG WEI, MUTHU" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
-            </div>
-        </div>
-
-        <!-- Bahagian Dashboard Senarai Kelas Yang Telah Hantar (DI DALAM PORTAL) -->
-        <div class="mt-4 pt-4 border-t border-slate-200 space-y-2">
-            <div class="flex justify-between items-center">
-                <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
-                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Senarai Kelas Selesai Penghantaran Nama
-                </h4>
-                <button onclick="muatSenaraiTelahHantar()" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold underline">
-                    Muat Semula
+        <!-- TAB 2: KANDUNGAN SEMAK STATUS KELAS (DEFAULT HIDDEN) -->
+        <div id="contentTabSemak" class="hidden space-y-3">
+            <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div>
+                    <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+                        <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Senarai Kelas Selesai Penghantaran Nama
+                    </h4>
+                    <p class="text-[10px] text-slate-500">Semak status hantaran data susunan nama mengikut kelas.</p>
+                </div>
+                <button onclick="muatSenaraiTelahHantar()" class="text-xs bg-white border border-slate-300 hover:bg-slate-100 px-3 py-1.5 rounded-lg text-slate-700 font-medium transition-all shadow-sm">
+                    <i class="fa-solid fa-rotate mr-1 text-[10px]"></i> Muat Semula
                 </button>
             </div>
             
-            <div id="senaraiKelasHantarContainer" class="bg-slate-50 rounded-xl p-3 border border-slate-200 max-h-36 overflow-y-auto space-y-1.5">
+            <div id="senaraiKelasHantarContainer" class="bg-slate-50 rounded-xl p-3 border border-slate-200 max-h-72 overflow-y-auto space-y-1.5">
                 <p class="text-xs text-slate-400 italic text-center py-2">Sedang memuatkan senarai...</p>
             </div>
         </div>
 
         <!-- Butang Simpan / Tutup -->
         <div class="flex justify-end gap-2 pt-2 border-t">
-            <button onclick="tutupPortalGuru()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl">Tutup</button>
+            <button onclick="tutupPortalGuru()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200">Tutup</button>
             <button onclick="hantarSusunanKeGoogleSheets()" class="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow">Hantar</button>
         </div>
     </div>
@@ -1526,6 +1542,30 @@ function tutupNotifBerjaya() {
     }
 }
 
+        function tukarTab(tabName) {
+    const btnTabIsi = document.getElementById('btnTabIsi');
+    const btnTabSemak = document.getElementById('btnTabSemak');
+    const contentTabIsi = document.getElementById('contentTabIsi');
+    const contentTabSemak = document.getElementById('contentTabSemak');
+
+    if (tabName === 'tabIsi') {
+        btnTabIsi.className = "flex-1 py-2 text-xs font-bold text-emerald-600 border-b-2 border-emerald-600 transition-all flex items-center justify-center gap-1.5";
+        btnTabSemak.className = "flex-1 py-2 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-all flex items-center justify-center gap-1.5";
+        
+        contentTabIsi.classList.remove('hidden');
+        contentTabSemak.classList.add('hidden');
+    } else {
+        btnTabSemak.className = "flex-1 py-2 text-xs font-bold text-emerald-600 border-b-2 border-emerald-600 transition-all flex items-center justify-center gap-1.5";
+        btnTabIsi.className = "flex-1 py-2 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-all flex items-center justify-center gap-1.5";
+        
+        contentTabSemak.classList.remove('hidden');
+        contentTabIsi.classList.add('hidden');
+
+        // Automatik muat senarai bila buka Tab 2
+        muatSenaraiTelahHantar();
+    }
+}
+        
 // Fungsi Modal Notifikasi Gagal
 function tunjukkanNotifikasiGagal(pesan) {
     const modalExist = document.getElementById('modalNotifGagal');
