@@ -65,21 +65,6 @@
                 <p class="text-slate-600 text-sm">Pilih kategori tahun murid untuk meneruskan tempahan pakej gambar kelas.</p>
             </div>
 
-            <!-- Bahagian Dashboard Senarai Kelas Yang Telah Hantar -->
-<div class="mt-4 pt-4 border-t border-slate-200 space-y-2">
-    <div class="flex justify-between items-center">
-        <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
-            <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Senarai Kelas Selesai Penghantaran Nama
-        </h4>
-        <button onclick="muatSenaraiTelahHantar()" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold underline">
-            Muat Semula
-        </button>
-    </div>
-    
-    <div id="senaraiKelasHantarContainer" class="bg-slate-50 rounded-xl p-3 border border-slate-200 max-h-36 overflow-y-auto space-y-1.5">
-        <p class="text-xs text-slate-400 italic text-center py-2">Sedang memuatkan senarai...</p>
-    </div>
-</div>
         <!-- Quick Announcement banner -->
 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-start space-x-3 text-xs text-amber-900 shadow-sm max-w-4xl mx-auto">
     <div class="bg-amber-100 text-amber-700 p-2 rounded-xl mt-0.5">
@@ -156,7 +141,7 @@
 <div id="modalPortalGuru" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden overflow-y-auto p-4">
     <div class="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-2xl space-y-4 my-8">
         <div class="flex justify-between items-center border-b pb-3">
-            <h3 class="text-lg font-bold text-slate-800">Portal  Murid & Preview Gambar Kelas</h3>
+            <h3 class="text-lg font-bold text-slate-800">Portal Murid & Preview Gambar Kelas</h3>
             <button onclick="tutupPortalGuru()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
         </div>
 
@@ -202,7 +187,23 @@
             </div>
         </div>
 
-        <!-- Butang Simpan -->
+        <!-- Bahagian Dashboard Senarai Kelas Yang Telah Hantar (DI DALAM PORTAL) -->
+        <div class="mt-4 pt-4 border-t border-slate-200 space-y-2">
+            <div class="flex justify-between items-center">
+                <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Senarai Kelas Selesai Penghantaran Nama
+                </h4>
+                <button onclick="muatSenaraiTelahHantar()" class="text-xs text-emerald-600 hover:text-emerald-700 font-semibold underline">
+                    Muat Semula
+                </button>
+            </div>
+            
+            <div id="senaraiKelasHantarContainer" class="bg-slate-50 rounded-xl p-3 border border-slate-200 max-h-36 overflow-y-auto space-y-1.5">
+                <p class="text-xs text-slate-400 italic text-center py-2">Sedang memuatkan senarai...</p>
+            </div>
+        </div>
+
+        <!-- Butang Simpan / Tutup -->
         <div class="flex justify-end gap-2 pt-2 border-t">
             <button onclick="tutupPortalGuru()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl">Tutup</button>
             <button onclick="hantarSusunanKeGoogleSheets()" class="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow">Hantar</button>
