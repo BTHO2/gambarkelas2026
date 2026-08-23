@@ -1453,10 +1453,18 @@ function tutupNotifBerjaya() {
     const modalNotif = document.getElementById('modalNotifBerjaya');
     if (modalNotif) modalNotif.remove();
 
-    // 2. Terus tutup modal utama Portal Guru Kelas dan kembali ke paparan utama
-    const modalPortal = document.getElementById('idModalPortalGuru'); // Gantikan dengan ID modal utama portal guru anda jika berbeza
-    if (modalPortal) {
-        modalPortal.classList.add('hidden');
+    // 2. Tutup modal portal guru (Cuba cari menggunakan beberapa kemungkinan ID yang biasa digunakan)
+    const possibleIds = ['idModalPortalGuru', 'portalGuruModal', 'guruModal', 'modalPortalGuru', 'modalGuru'];
+    possibleIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add('hidden');
+        }
+    });
+
+    // 3. Langkah keselamatan tambahan: Jika anda ada fungsi khas untuk tutup portal (cth: tutupPortalGuru()), ia akan dipanggil di sini:
+    if (typeof tutupPortalGuru === 'function') {
+        tutupPortalGuru();
     }
 }
 
