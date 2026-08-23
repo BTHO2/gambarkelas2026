@@ -1386,14 +1386,19 @@ function muatTurunPreviewKelas() {
         return;
     }
 
-    // Gabungkan tahun dan kelas supaya jadi "Tahun 1 - 1 Sunflower"
     let kunciKelas = `${yr} - ${cls}`; 
-
-    // Gantikan 'imgurKelasMap' dengan nama objek senarai Imgur sebenar anda di dalam fail JS
     let imgUrl = imgurKelasMap[kunciKelas]; 
 
     if (imgUrl) {
-        container.innerHTML = `<img src="${imgUrl}" alt="Preview ${kunciKelas}" class="max-h-48 object-contain rounded-lg shadow">`;
+        // Tambah fungsi onclick supaya boleh klik untuk zum besar
+        container.innerHTML = `
+            <div class="relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl}', '${kunciKelas}')">
+                <img src="${imgUrl}" alt="Preview ${kunciKelas}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zum besar
+                </div>
+            </div>
+        `;
     } else {
         container.innerHTML = `<p class="text-xs text-amber-600 font-medium">Pautan Imgur belum dimasukkan untuk kelas <b>${kunciKelas}</b>.</p>`;
     }
