@@ -41,7 +41,7 @@
                     <span class="hidden sm:inline">Admin</span>
                 </button>
                 <button onclick="bukaLoginGuru()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow">
-                    <span>👨‍🏫</span> <span class="hidden sm:inline">Portal Guru</span>
+                    <span>👨‍🏫</span> <span class="hidden sm:inline">Guru Kelas</span>
                 </button>
             </div>
         </div>
@@ -479,7 +479,7 @@
         // ==========================================
         // 🚨 PENTING: MASUKKAN GOOGLE APPS SCRIPT URL ANDA DI SINI
         // ==========================================
-        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpdmeWV7SazyZVG5clkN2HKZ1-cvYZuJbftvNKKYjC-VSPctd6KnXYwRhUYRmjL0tKzQ/exec";
+        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4ZtkgdE8__uu5CVctjZfzNFvEnTwDyz2E2bf5TC4Eig1w-UaOQBI-lewDt3CNipHSgg/exec";
 
         // Data Configuration
         const yearList = ["PPKI", "Tahun 1", "Tahun 2", "Tahun 3", "Tahun 4", "Tahun 5", "Tahun 6"];
@@ -1385,7 +1385,7 @@ function hantarSusunanKeGoogleSheets() {
     btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sedang Menyimpan...`;
 
     // Ganti dengan URL Google Apps Script Web App anda yang sebenar
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzpdmeWV7SazyZVG5clkN2HKZ1-cvYZuJbftvNKKYjC-VSPctd6KnXYwRhUYRmjL0tKzQ/exec"; 
+    const scriptURL = "https://script.google.com/macros/s/AKfycbw4ZtkgdE8__uu5CVctjZfzNFvEnTwDyz2E2bf5TC4Eig1w-UaOQBI-lewDt3CNipHSgg/exec"; 
 
     const payload = {
         action: "simpanSusunanMurid",
@@ -1422,7 +1422,47 @@ function hantarSusunanKeGoogleSheets() {
         tunjukkanNotifikasiGagal("Terdapat ralat rangkaian. Sila cuba sekali lagi.");
     });
 }
+        
+function muatSenaraiTelahHantar() {
+    const container = document.getElementById('senaraiKelasHantarContainer');
+    container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-2"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Memuatkan senarai ...</p>`;
 
+    // Gantikan dengan URL Web App Google Apps Script anda yang sebenar
+    const scriptURL = "https://script.google.com/macros/s/AKfycbw4ZtkgdE8__uu5CVctjZfzNFvEnTwDyz2E2bf5TC4Eig1w-UaOQBI-lewDt3CNipHSgg/exec"; 
+
+    fetch(scriptURL)
+    .then(response => response.json())
+    .then(data => {
+        if (!data || data.length === 0) {
+            container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-2">Tiada rekod hantaran di dalam Google Sheets lagi.</p>`;
+            return;
+        }
+
+        // Ambil senarai unik (jika kelas sama hantar 2 kali, paparkan yang terkini)
+        let unikeKelas = {};
+        data.forEach(item => {
+            let key = `${item.tahun} - ${item.kelas}`;
+            unikeKelas[key] = item.tarikh; // simpan tarikh terkini
+        });
+
+        let html = '';
+        for (let kelasFull in unikeKelas) {
+            html += `
+                <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100 shadow-sm text-xs">
+                    <span class="font-bold text-slate-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i> ${kelasFull}
+                    </span>
+                    <span class="text-[10px] text-slate-400">${unikeKelas[kelasFull]}</span>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error memuatkan senarai:', error);
+        container.innerHTML = `<p class="text-xs text-rose-500 italic text-center py-2">Gagal memuatkan senarai dari Google Sheets.</p>`;
+    });
+}
 // Fungsi Modal Notifikasi Berjaya yang Cantik
 function tunjukkanNotifikasiBerjaya(yr, cls) {
     // Tutup portal guru dulu atau terus timbulkan modal kejayaan
