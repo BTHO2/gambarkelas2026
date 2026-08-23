@@ -311,6 +311,11 @@
                     </div>
                 </div>
 
+               <button onclick="downloadMasterAdminReportPDF()" class="w-full mt-2 bg-slate-800 hover:bg-slate-900 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow flex items-center justify-center space-x-1.5 transition">
+    <i class="fa-solid fa-file-arrow-down"></i>
+    <span>Laporan Keseluruhan (PDF)</span>
+</button>
+
                 <div class="pt-2 flex justify-between items-center">
                     <h4 class="text-xs font-bold text-slate-700 uppercase">Senarai Tempahan Terkini</h4>
                     <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center space-x-1">
@@ -971,6 +976,113 @@ function openReceiptInspector(orderId) {
             doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
 
             doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
+        }
+
+        function downloadMasterAdminReportPDF() {
+            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape'); // Landscape kerana jadual lebar
+
+            // Header Laporan Master Admin
+            doc.setFillColor(30, 27, 75);
+            doc.rect(0, 0, 297, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
+            doc.text("RUMUSAN MASTER KESELURUHAN TEMPAHAN & KUTIPAN KELAS (ADMIN)", 14, 15);
+            doc.setFontSize(10);
+            doc.text(`SK Bandar Tun Hussein Onn 2 (SKBTHO2) | Tarikh Cetakan: ${new Date().toLocaleDateString()}`, 14, 25);
+
+            // Ambil senarai kelas secara dinamik mengikut classMap asal anda
+            let allClasses = [];
+            if (typeof classMap !== 'undefined') {
+                for (let yr in classMap) {
+                    if (Array.isArray(classMap[yr])) {
+                        classMap[yr].forEach(cls => {
+                            allClasses.push(cls);
+                        });
+                    }
+                }
+            }
+
+            let tableData = [];
+            let gTotalPkgA = 0, gTotalPkgB = 0, gTotalPkgC = 0;
+            let gTotalCash = 0, gTotalQR = 0, gTotalAll = 0;
+
+            allClasses.forEach((clsName, idx) => {
+                let classOrders = ordersDB.filter(o => String(o.class).trim().toLowerCase() === clsName.toLowerCase());
+                
+                let pkgA = classOrders.filter(o => o.package === "Pakej A").length;
+                let pkgB = classOrders.filter(o => o.package === "Pakej B").length;
+                let pkgC = classOrders.filter(o => o.package === "Pakej C").length;
+
+                let cashSum = classOrders
+                    .filter(o => String(o.paymentMethod).toLowerCase().includes("tunai") || String(o.paymentMethod).toLowerCase().includes("cash"))
+                    .reduce((sum, o) => sum + Number(o.price || 0), 0);
+
+                let qrSum = classOrders
+                    .filter(o => String(o.paymentMethod).toLowerCase().includes("qr") || String(o.paymentMethod).toLowerCase().includes("duitnow"))
+                    .reduce((sum, o) => sum + Number(o.price || 0), 0);
+
+                let totalRow = classOrders.reduce((sum, o) => sum + Number(o.price || 0), 0);
+
+                gTotalPkgA += pkgA;
+                gTotalPkgB += pkgB;
+                gTotalPkgC += pkgC;
+                gTotalCash += cashSum;
+                gTotalQR += qrSum;
+                gTotalAll += totalRow;
+
+                tableData.push([
+                    tableData.length + 1,
+                    clsName,
+                    pkgA,
+                    pkgB,
+                    pkgC,
+                    `RM ${cashSum}`,
+                    `RM ${qrSum}`,
+                    `RM ${totalRow}`
+                ]);
+            });
+
+            // Baris Grand Total di bawah sekali
+            tableData.push([
+                "JUMLAH",
+                "KESELURUHAN",
+                gTotalPkgA,
+                gTotalPkgB,
+                gTotalPkgC,
+                `RM ${gTotalCash}`,
+                `RM ${gTotalQR}`,
+                `RM ${gTotalAll}`
+            ]);
+
+            doc.autoTable({
+                startY: 45,
+                head: [["Bil", "Nama Kelas", "Pakej A", "Pakej B", "Pakej C", "Tunai", "QR DBHOSS", "Jumlah (RM)"]],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 27, 75], halign: 'center' },
+                columnStyles: {
+                    0: { halign: 'center', cellWidth: 15 },
+                    1: { cellWidth: 50 },
+                    2: { halign: 'center', cellWidth: 25 },
+                    3: { halign: 'center', cellWidth: 25 },
+                    4: { halign: 'center', cellWidth: 25 },
+                    5: { halign: 'right', cellWidth: 40 },
+                    6: { halign: 'right', cellWidth: 40 },
+                    7: { halign: 'right', cellWidth: 47 }
+                },
+                didParseCell: function (data) {
+                    if (data.row.index === tableData.length - 1) {
+                        data.cell.styles.fillColor = [241, 245, 249];
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                },
+                styles: { fontSize: 9 }
+            });
+
+            doc.save(`Rumusan_Master_Admin_Gambar_Kelas_2026.pdf`);
         }
 
         function showAlert(title, message, isSuccess = true) {
