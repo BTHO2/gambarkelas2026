@@ -381,19 +381,18 @@
     </div>
     
     <!-- ADMIN PASSWORD & SUMMARY MODAL -->
-<!-- Modal Log Masuk Admin (Disamakan 100% dengan Modal Guru) -->
 <div id="adminModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl relative space-y-4">
+    <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl relative space-y-4" style="font-family: inherit;">
         
-        <!-- Header dengan Ikon Emoji di Kiri & Butang X di Kanan -->
+        <!-- Header -->
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
                     🔐
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-slate-800">Log Masuk Admin</h3>
-                    <p class="text-xs text-slate-500">Khusus untuk Admin Sekolah</p>
+                    <h3 class="text-lg font-bold text-slate-800" style="font-size: 1.125rem; font-weight: 700;">Log Masuk Admin</h3>
+                    <p class="text-xs text-slate-500">Khusus untuk Admin/ Guru Kelas</p>
                 </div>
             </div>
             <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600 p-2">
@@ -401,11 +400,11 @@
             </button>
         </div>
 
-        <!-- Bahagian Kandungan / Input Password Admin -->
+        <!-- Form Box -->
         <div id="adminPassBox" class="space-y-4 pt-2">
             <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Kata Laluan</label>
-                <input type="password" id="adminPasswordInput" placeholder="Masukkan kata laluan..." class="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500">
+                <input type="password" id="adminPasswordInput" placeholder="Masukkan kata laluan..." class="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 bg-white">
             </div>
             <button onclick="semakPasswordAdmin()" class="w-full py-3 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow transition-all">
                 Log Masuk
