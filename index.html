@@ -173,7 +173,7 @@
 
             <!-- Bahagian Preview Gambar Imgur -->
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center space-y-2">
-                <span class="text-xs font-bold text-slate-600 uppercase">Preview Reka Letak Gambar Kelas</span>
+                <span class="text-xs font-bold text-slate-600 uppercase">Preview Gambar Kelas</span>
                 <div id="containerPreviewGambar" class="flex justify-center items-center min-h-[160px] bg-slate-200 rounded-lg overflow-hidden border">
                     <p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas untuk melihat preview gambar.</p>
                 </div>
@@ -184,17 +184,17 @@
                 <h4 class="text-xs font-bold text-slate-700 uppercase">Susunan Nama Murid</h4>
                 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Hadapan:</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Hadapan (Dari kiri):</label>
                     <textarea id="inputBarisHadapan" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: AHMAD ALI, SITI AISYAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Tengah:</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Tengah (Dari kiri):</label>
                     <textarea id="inputBarisTengah" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: MOHD RIZAL, NUR FARAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Belakang:</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Baris Belakang (Dari kiri):</label>
                     <textarea id="inputBarisBelakang" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: CHONG WEI, MUTHU" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                 </div>
             </div>
@@ -1259,63 +1259,63 @@ const imgurKelasMap = {
     "PPKI - 2 Rafflesia": "https://i.imgur.com/CONTOH1.jpg",
     "PPKI - 4 Rafflesia": "https://i.imgur.com/CONTOH2.jpg",
     "PPKI - 5 Rafflesia": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 1 - 1 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 1 - 1 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 1 - Jasmine": "https://imgur.com/eNbxG4X.png",
+    "Tahun 1 - Hibiscus": "https://imgur.com/FWgN8WY.png",
     "Tahun 1 - Sunflower": "https://imgur.com/x2iurLo.png",
-    "Tahun 1 - 1 Lavender": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 1 - 1 Tulip": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 1 - 1 Daisy": "https://imgur.com/YH6yP5l.png",
-    "Tahun 1 - 1 Sakura": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 1 - 1 Rose": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 1 - 1 Orchid": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 1 - 1 Lily": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 2 - 2 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 2 - 2 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 2 - 2 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 2 - 2 Lavender": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 2 - 2 Tulip": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 2 - 2 Daisy": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 2 - 2 Sakura": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 2 - 2 Rose": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 2 - 2 Orchid": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 3 - 3 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 3 - 3 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 3 - 3 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 3 - 3 Lavender": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 3 - 3 Tulip": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 3 - 3 Daisy": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 3 - 3 Sakura": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 3 - 3 Rose": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 3 - 3 Orchid": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 3 - 3 Lily": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 4 - 4 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 4 - 4 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 4 - 4 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 4 - 4 Lavender": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 4 - 4 Tulip": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 4 - 4 Daisy": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 4 - 4 Sakura": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 4 - 4 Rose": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 4 - 4 Orchid": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 5 - 5 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 5 - 5 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 5 - 5 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 5 - 5 Lavender": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 5 - 5 Tulip": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 5 - 5 Daisy": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 5 - 5 Sakura": "https://imgur.com/0g439ug.png",
-    "Tahun 5 - 5 Rose": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 5 - 5 Orchid": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 5 - 5 Lily": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 6 - 6 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 6 - 6 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 6 - 6 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 6 - 6 Lavender": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 6 - 6 Tulip": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 6 - 6 Daisy": "https://i.imgur.com/CONTOH2.jpg",
-    "Tahun 6 - 6 Sakura": "https://i.imgur.com/CONTOH1.jpg",
-    "Tahun 6 - 6 Rose": "https://imgur.com/eikP5qs.png",
-    "Tahun 6 - 6 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - Lavender": "https://imgur.com/ejVxqgc.png",
+    "Tahun 1 - Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - Daisy": "https://imgur.com/YH6yP5l.png",
+    "Tahun 1 - Sakura": "https://imgur.com/u8F1vI5.png",
+    "Tahun 1 - Rose": "https://imgur.com/RTEKlSZ.png",
+    "Tahun 1 - Orchid": "https://imgur.com/RHCQqt2.png",
+    "Tahun 1 - Lily": "https://imgur.com/SqcoyIo.png",
+    "Tahun 2 - Jasmine": "https://imgur.com/5MyCov5.png",
+    "Tahun 2 - Hibiscus": "https://imgur.com/WwcF9Fm.png",
+    "Tahun 2 - Sunflower": "https://imgur.com/qPT8pJr.png",
+    "Tahun 2 - Lavender": "https://imgur.com/kIbngoX.png",
+    "Tahun 2 - Tulip": "https://imgur.com/QI5OPNv.png",
+    "Tahun 2 - Daisy": "https://imgur.com/5Mx00Zl.png",
+    "Tahun 2 - Sakura": "https://imgur.com/N4rRFqY.png",
+    "Tahun 2 - Rose": "https://imgur.com/ibrQbgT.png",
+    "Tahun 2 - Orchid": "https://imgur.com/DAnt73C.png",
+    "Tahun 3 - Jasmine": "https://imgur.com/kkaSz93.png",
+    "Tahun 3 - Hibiscus": "https://imgur.com/dl8F0Fx.png",
+    "Tahun 3 - Sunflower": "https://imgur.com/NCs9vfU.png",
+    "Tahun 3 - Lavender": "https://imgur.com/5SAliLk.png",
+    "Tahun 3 - Tulip": "https://imgur.com/4Kit8fc.png",
+    "Tahun 3 - Daisy": "https://imgur.com/OpRCUHb.png",
+    "Tahun 3 - Sakura": "https://imgur.com/s8EbvPl.png",
+    "Tahun 3 - Rose": "https://imgur.com/m43fiyl.png",
+    "Tahun 3 - Orchid": "https://imgur.com/AcIqUsR.png",
+    "Tahun 3 - Lily": "https://imgur.com/D8U0GZe.png",
+    "Tahun 4 - Jasmine": "https://imgur.com/dcJ48wg.png",
+    "Tahun 4 - Hibiscus": "https://imgur.com/ylS55Gf.png",
+    "Tahun 4 - Sunflower": "https://imgur.com/6aCLcb6.png",
+    "Tahun 4 - Lavender": "https://imgur.com/p7TZbbB.png",
+    "Tahun 4 - Tulip": "https://imgur.com/losiVBa.png",
+    "Tahun 4 - Daisy": "https://imgur.com/tzd10rI.png",
+    "Tahun 4 - Sakura": "https://imgur.com/GHxkyL9.png",
+    "Tahun 4 - Rose": "https://imgur.com/rJvdy2x.png",
+    "Tahun 4 - Orchid": "https://imgur.com/ZKJnDKL.png",
+    "Tahun 5 - Jasmine": "https://imgur.com/jXA2QEC.png",
+    "Tahun 5 - Hibiscus": "https://imgur.com/jtz7igj.png",
+    "Tahun 5 - Sunflower": "https://imgur.com/8m1Ax2L.png",
+    "Tahun 5 - Lavender": "https://imgur.com/Aks7KN3.png",
+    "Tahun 5 - Tulip": "https://imgur.com/fIvyuIa.png",
+    "Tahun 5 - Daisy": "https://imgur.com/vjTiidC.png",
+    "Tahun 5 - Sakura": "https://imgur.com/0g439ug.png",
+    "Tahun 5 - Rose": "https://imgur.com/rDs7Xqa.png",
+    "Tahun 5 - Orchid": "https://imgur.com/XNeBd46.png",
+    "Tahun 5 - Lily": "https://imgur.com/ZRjvafT.png",
+    "Tahun 6 - Jasmine": "https://imgur.com/DapmYFE.png",
+    "Tahun 6 - Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 6 - Sunflower": "https://imgur.com/8Ziac5G.png",
+    "Tahun 6 - Lavender": "https://imgur.com/omKOUNs.png",
+    "Tahun 6 - Tulip": "https://imgur.com/qArYv0o.png",
+    "Tahun 6 - Daisy": "https://imgur.com/cx73z1i.png",
+    "Tahun 6 - Sakura": "https://imgur.com/V2Jxj4X.png",
+    "Tahun 6 - Rose": "https://imgur.com/eikP5qs.png",
+    "Tahun 6 - Orchid": "https://imgur.com/xwXnvdH.png",
     // Tambah pautan Imgur untuk kelas-kelas lain di sini...
 };
 
