@@ -94,7 +94,76 @@
                 <!-- Year cards populated by JS -->
             </div>
         </div>
+<!-- Modal Log Masuk Guru -->
+<div id="modalLoginGuru" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl space-y-4">
+        <h3 class="text-base font-bold text-slate-800">Log Masuk Guru Kelas</h3>
+        <p class="text-xs text-slate-500">Sila masukkan kata laluan keselamatan guru kelas.</p>
+        <input type="password" id="passwordGuru" placeholder="Masukkan Kata Laluan" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <div class="flex justify-end gap-2 pt-2">
+            <button onclick="tutupLoginGuru()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl">Batal</button>
+            <button onclick="semakPasswordGuru()" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 rounded-xl">Masuk</button>
+        </div>
+    </div>
+</div>
 
+<!-- Modal Utama Portal Guru Kelas -->
+<div id="modalPortalGuru" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden overflow-y-auto p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-2xl space-y-4 my-8">
+        <div class="flex justify-between items-center border-b pb-3">
+            <h3 class="text-lg font-bold text-slate-800">Portal Susunan Murid & Preview Gambar Kelas</h3>
+            <button onclick="tutupPortalGuru()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+        </div>
+
+        <!-- Pilihan Tahun & Kelas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Tahun:</label>
+                <select id="guruYearSelect" onchange="populateGuruClassDropdown()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Kelas:</label>
+                <select id="guruClassSelect" onchange="muatTurunPreviewKelas()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                </select>
+            </div>
+        </div>
+
+        <!-- Bahagian Preview Gambar Imgur -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center space-y-2">
+            <span class="text-xs font-bold text-slate-600 uppercase">Preview Reka Letak Gambar Kelas</span>
+            <div id="containerPreviewGambar" class="flex justify-center items-center min-h-[160px] bg-slate-200 rounded-lg overflow-hidden border">
+                <p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>
+            </div>
+        </div>
+
+        <!-- Borang Masukkan Nama Murid Mengikut Baris -->
+        <div class="space-y-3">
+            <h4 class="text-xs font-bold text-slate-700 uppercase">Susunan Nama Murid (Auto Huruf Besar)</h4>
+            
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Baris Hadapan:</label>
+                <textarea id="inputBarisHadapan" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: AHMAD ALI, SITI AISYAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Baris Tengah:</label>
+                <textarea id="inputBarisTengah" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: MOHD RIZAL, NUR FARAH" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Baris Belakang:</label>
+                <textarea id="inputBarisBelakang" oninput="this.value = this.value.toUpperCase()" rows="2" placeholder="Cth: CHONG WEI, MUTHU" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+            </div>
+        </div>
+
+        <!-- Butang Simpan -->
+        <div class="flex justify-end gap-2 pt-2 border-t">
+            <button onclick="tutupPortalGuru()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl">Tutup</button>
+            <button onclick="hantarSusunanKeGoogleSheets()" class="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow">Simpan & Hantar ke Sheets</button>
+        </div>
+    </div>
+</div>
         <!-- VIEW 2: SELECT CLASS -->
         <div id="viewClass" class="space-y-6 hidden">
             <div class="flex items-center justify-between mb-4">
@@ -200,7 +269,9 @@
                 </form>
             </div>
         </div>
-
+<button onclick="bukaLoginGuru()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow">
+    <span>👨‍🏫</span> Portal Guru Kelas
+</button>
         <!-- VIEW 4: SUCCESS CONFIRMATION -->
         <div id="viewSuccess" class="space-y-6 hidden max-w-xl mx-auto text-center py-8">
             <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 space-y-6">
@@ -1119,6 +1190,193 @@ function downloadMasterAdminReportPDF() {
         function closeAlertModal() {
             document.getElementById('alertModal').classList.add('hidden');
         }
+        // Pangkalan data pautan Imgur untuk setiap kelas (Contoh format: "Tahun - NamaKelas": "URL_Imgur")
+// Anda boleh masukkan 62 pautan Imgur kelas anda di sini nanti:
+const imgurKelasMap = {
+    "PPKI - 1 Dahlia": "https://i.imgur.com/CONTOH1.jpg",
+    "PPKI - 1 Rafflesia": "https://i.imgur.com/CONTOH2.jpg",
+    "PPKI - 2 Rafflesia": "https://i.imgur.com/CONTOH1.jpg",
+    "PPKI - 4 Rafflesia": "https://i.imgur.com/CONTOH2.jpg",
+    "PPKI - 5 Rafflesia": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - 1 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - 1 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 1 - 1 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - 1 Lavender": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 1 - 1 Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - 1 Daisy": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 1 - 1 Sakura": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - 1 Rose": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 1 - 1 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 1 - 1 Lily": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 2 - 2 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 2 - 2 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 2 - 2 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 2 - 2 Lavender": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 2 - 2 Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 2 - 2 Daisy": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 2 - 2 Sakura": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 2 - 2 Rose": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 2 - 2 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 3 - 3 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 3 - 3 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 3 - 3 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 3 - 3 Lavender": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 3 - 3 Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 3 - 3 Daisy": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 3 - 3 Sakura": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 3 - 3 Rose": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 3 - 3 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 3 - 3 Lily": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 4 - 4 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 4 - 4 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 4 - 4 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 4 - 4 Lavender": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 4 - 4 Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 4 - 4 Daisy": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 4 - 4 Sakura": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 4 - 4 Rose": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 4 - 4 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 5 - 5 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 5 - 5 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 5 - 5 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 5 - 5 Lavender": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 5 - 5 Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 5 - 5 Daisy": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 5 - 5 Sakura": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 5 - 5 Rose": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 5 - 5 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 5 - 5 Lily": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 6 - 6 Jasmine": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 6 - 6 Hibiscus": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 6 - 6 Sunflower": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 6 - 6 Lavender": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 6 - 6 Tulip": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 6 - 6 Daisy": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 6 - 6 Sakura": "https://i.imgur.com/CONTOH1.jpg",
+    "Tahun 6 - 6 Rose": "https://i.imgur.com/CONTOH2.jpg",
+    "Tahun 6 - 6 Orchid": "https://i.imgur.com/CONTOH1.jpg",
+    // Tambah pautan Imgur untuk kelas-kelas lain di sini...
+};
+
+function bukaLoginGuru() {
+    document.getElementById('passwordGuru').value = '';
+    document.getElementById('modalLoginGuru').classList.remove('hidden');
+}
+
+function tutupLoginGuru() {
+    document.getElementById('modalLoginGuru').classList.add('hidden');
+}
+
+function semakPasswordGuru() {
+    const pwd = document.getElementById('passwordGuru').value;
+    if (pwd === "DBHOSS4055") {
+        tutupLoginGuru();
+        bukaPortalGuru();
+    } else {
+        alert("Kata laluan guru salah! Sila cuba lagi.");
+    }
+}
+
+function bukaPortalGuru() {
+    document.getElementById('modalPortalGuru').classList.remove('hidden');
+    
+    // Muatkan pilihan tahun ke dropdown guru
+    const yearSelect = document.getElementById('guruYearSelect');
+    yearSelect.innerHTML = '<option value="">-- Pilih Tahun --</option>';
+    
+    if (typeof classMap !== 'undefined') {
+        for (let yr in classMap) {
+            yearSelect.innerHTML += `<option value="${yr}">${yr}</option>`;
+        }
+    }
+    document.getElementById('guruClassSelect').innerHTML = '<option value="">-- Pilih Kelas Dulu --</option>';
+    document.getElementById('containerPreviewGambar').innerHTML = '<p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>';
+}
+
+function tutupPortalGuru() {
+    document.getElementById('modalPortalGuru').classList.add('hidden');
+}
+
+function populateGuruClassDropdown() {
+    const yr = document.getElementById('guruYearSelect').value;
+    const classSelect = document.getElementById('guruClassSelect');
+    classSelect.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+
+    if (yr && typeof classMap !== 'undefined' && classMap[yr]) {
+        classMap[yr].forEach(cls => {
+            classSelect.innerHTML += `<option value="${cls}">${cls}</option>`;
+        });
+    }
+}
+
+function muatTurunPreviewKelas() {
+    const yr = document.getElementById('guruYearSelect').value;
+    const cls = document.getElementById('guruClassSelect').value;
+    const container = document.getElementById('containerPreviewGambar');
+
+    if (!yr || !cls) {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>';
+        return;
+    }
+
+    let kunciKelas = `${yr} - ${cls}`;
+    let imgUrl = imgurKelasMap[kunciKelas];
+
+    if (imgUrl) {
+        container.innerHTML = `<img src="${imgUrl}" alt="Preview ${kunciKelas}" class="max-h-48 object-contain rounded-lg shadow">`;
+    } else {
+        container.innerHTML = `<p class="text-xs text-amber-600 font-medium">Pautan Imgur belum dimasukkan untuk kelas <b>${kunciKelas}</b>.</p>`;
+    }
+}
+
+function hantarSusunanKeGoogleSheets() {
+    const yr = document.getElementById('guruYearSelect').value;
+    const cls = document.getElementById('guruClassSelect').value;
+    const barisHadapan = document.getElementById('inputBarisHadapan').value.trim();
+    const barisTengah = document.getElementById('inputBarisTengah').value.trim();
+    const barisBelakang = document.getElementById('inputBarisBelakang').value.trim();
+
+    if (!yr || !cls) {
+        alert("Sila pilih Tahun dan Kelas terlebih dahulu!");
+        return;
+    }
+
+    if (!barisHadapan && !barisTengah && !barisBelakang) {
+        alert("Sila masukkan sekurang-kurangnya satu nama murid.");
+        return;
+    }
+
+    // Guna URL Web App Google Apps Script anda yang sedia ada
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyPew2EK-uxiHtUm5MXRpfzvUZ5p_7sq0p0KPmJE4nzjTjTtw1svPFWqdF7Z4UO1PRtyw/exec"; 
+
+    const payload = {
+        action: "simpanSusunanMurid",
+        tahun: yr,
+        kelas: cls,
+        barisHadapan: barisHadapan,
+        barisTengah: barisTengah,
+        barisBelakang: barisBelakang
+    };
+
+    alert("Menghantar data susunan murid ke Google Sheets...");
+
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        alert("Berjaya! Susunan murid telah disimpan ke Google Sheets tab 'Susunan_Murid'.");
+        document.getElementById('inputBarisHadapan').value = '';
+        document.getElementById('inputBarisTengah').value = '';
+        document.getElementById('inputBarisBelakang').value = '';
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert("Gagal menghantar data. Sila semak sambungan internet.");
+    });
+}
     </script>
 </body>
 </html>
