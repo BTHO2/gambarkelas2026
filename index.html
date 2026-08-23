@@ -1445,8 +1445,8 @@ function muatSenaraiTelahHantar() {
     const container = document.getElementById('senaraiKelasHantarContainer');
     container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-2"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Memuatkan senarai ...</p>`;
 
-    // Gantikan dengan URL Web App Google Apps Script anda yang sebenar
-    const scriptURL = "https://script.google.com/macros/s/AKfycbw4ZtkgdE8__uu5CVctjZfzNFvEnTwDyz2E2bf5TC4Eig1w-UaOQBI-lewDt3CNipHSgg/exec"; 
+    // Tambah ?action=getSusunanMurid di hujung URL ini:
+    const scriptURL = "https://script.google.com/macros/s/AKfycbw4ZtkgdE8__uu5CVctjZfzNFvEnTwDyz2E2bf5TC4Eig1w-UaOQBI-lewDt3CNipHSgg/exec?action=getSusunanMurid"; 
 
     fetch(scriptURL)
     .then(response => response.json())
@@ -1460,7 +1460,7 @@ function muatSenaraiTelahHantar() {
         let unikeKelas = {};
         data.forEach(item => {
             let key = `${item.tahun} - ${item.kelas}`;
-            unikeKelas[key] = item.tarikh; // simpan tarikh terkini
+            unikeKelas[key] = item.timestamp; // Gunakan item.timestamp sebab dalam doGet anda key ialah timestamp
         });
 
         let html = '';
