@@ -1386,8 +1386,11 @@ function muatTurunPreviewKelas() {
         return;
     }
 
-    let kunciKelas = `${yr} - ${cls}`;
-    let imgUrl = imgurKelasMap[kunciKelas];
+    // Gabungkan menggunakan pembolehubah 'yr' dan 'cls' yang sebenar
+    let kunciKelas = `${yr} - ${cls}`; 
+
+    // Gantikan 'imgurKelasMap' dengan nama objek senarai Imgur sebenar anda di dalam fail JS
+    let imgUrl = imgurKelasMap[kunciKelas]; 
 
     if (imgUrl) {
         container.innerHTML = `<img src="${imgUrl}" alt="Preview ${kunciKelas}" class="max-h-48 object-contain rounded-lg shadow">`;
@@ -1395,7 +1398,6 @@ function muatTurunPreviewKelas() {
         container.innerHTML = `<p class="text-xs text-amber-600 font-medium">Pautan Imgur belum dimasukkan untuk kelas <b>${kunciKelas}</b>.</p>`;
     }
 }
-
 function hantarSusunanKeGoogleSheets() {
     const yr = document.getElementById('guruYearSelect').value;
     const cls = document.getElementById('guruClassSelect').value;
