@@ -486,7 +486,7 @@
         </div>
     </div>
 
-    <!-- RECEIPT INSPECTOR MODAL -->
+<!-- RECEIPT INSPECTOR MODAL -->
     <div id="receiptModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
             <div class="flex justify-between items-center border-b pb-3">
@@ -1336,6 +1336,26 @@ function bukaLoginGuru() {
 
 function tutupLoginGuru() {
     document.getElementById('modalLoginGuru').classList.add('hidden');
+}
+        function semakPasswordAdmin() {
+    // Pastikan ID 'adminPasswordInput' ini sama dengan yang ada pada kod HTML input di atas
+    const passwordInput = document.getElementById('adminPasswordInput').value;
+    const errorMsg = document.getElementById('errorLoginAdmin');
+    
+    // Gantikan "PASSWORD_ANDA_DI_SINI" dengan kata laluan admin sebenar anda
+    const passwordAdminSebenar = "PASSWORD_ANDA_DI_SINI"; 
+
+    if (passwordInput === passwordAdminSebenar) {
+        // Jika betul, sembunyikan ralat dan buka menu admin
+        if (errorMsg) errorMsg.classList.add('hidden');
+        closeAdminModal();
+        
+        // Letakkan fungsi seterusnya untuk buka panel admin di sini (cth: bukaDashboardAdmin())
+        alert("Log masuk admin berjaya!"); 
+    } else {
+        // Jika salah, paparkan teks ralat merah
+        if (errorMsg) errorMsg.classList.remove('hidden');
+    }
 }
 
 function semakPasswordGuru() {
