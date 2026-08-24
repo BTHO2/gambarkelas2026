@@ -869,28 +869,36 @@ if (new Date().getTime() > tarikhTutup) {
             doc.save(`Slip_Tempahan_${lastSubmittedOrder.studentName.replace(/\s+/g, '_')}.pdf`);
         }
 
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
-            document.getElementById('adminPassBox').classList.remove('hidden');
-            document.getElementById('adminDashboardBox').classList.add('hidden');
-            document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('adminError').classList.add('hidden');
-        }
+      function openAdminModal() {
+    document.getElementById('adminModal').classList.remove('hidden');
+    document.getElementById('adminPasswordInput').value = '';
+    const errorMsg = document.getElementById('errorLoginAdmin');
+    if (errorMsg) errorMsg.classList.add('hidden');
+}
 
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
+function closeAdminModal() {
+    document.getElementById('adminModal').classList.add('hidden');
+}
 
-        function semakPasswordAdmin() {
-            const val = document.getElementById('adminPasswordInput').value;
-            if (val === ADMIN_PASS) {
-                document.getElementById('adminPassBox').classList.add('hidden');
-                document.getElementById('adminDashboardBox').classList.remove('hidden');
-                loadAdminDashboard();
-            } else {
-                document.getElementById('adminError').classList.remove('hidden');
-            }
+function semakPasswordAdmin() {
+    const val = document.getElementById('adminPasswordInput').value;
+    const errorMsg = document.getElementById('errorLoginAdmin');
+    
+    // Gantikan ADMIN_PASS anda di sini (atau rujuk pembolehubah ADMIN_PASS yang sedia ada)
+    if (val === ADMIN_PASS) {
+        if (errorMsg) errorMsg.classList.add('hidden');
+        closeAdminModal();
+        
+        // Terus buka dashboard admin anda
+        const dashboardBox = document.getElementById('adminDashboardBox');
+        if (dashboardBox) {
+            dashboardBox.classList.remove('hidden');
         }
+        loadAdminDashboard();
+    } else {
+        if (errorMsg) errorMsg.classList.remove('hidden');
+    }
+}
 
     // ==========================================
         // 🔄 FUNGSI ADMIN: AMBIL DATA TERUS DARI GOOGLE SHEETS
