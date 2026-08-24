@@ -997,29 +997,48 @@ function openReceiptInspector(orderId) {
             document.getElementById('receiptModal').classList.add('hidden');
         }
 
-        function exportToExcel() {
-            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
-            if (ordersDB.length === 0) {
-                showAlert("Tiada Data", "Tiada rekod untuk dieksport.", false);
-                return;
-            }
+       function exportToExcel() {
+    // Utamakan ordersDB global, fallback ke localStorage jika kosong
+    let currentOrders = (typeof ordersDB !== 'undefined' && ordersDB.length > 0) 
+        ? ordersDB 
+        : (JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || []);
 
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "ID,Tahun,Kelas,Nama Murid,No Telefon,Pakej,Harga (RM),Kaedah Pembayaran,Nama Resit,Tarikh\n";
-
-            ordersDB.forEach(row => {
-                let line = `"${row.orderId || row.id}","${row.year}","${row.class}","${row.studentName}","${row.parentPhone}","${row.package}","${row.price}","${row.paymentMethod}","${row.receiptName}","${row.timestamp}"`;
-                csvContent += line + "\n";
-            });
-
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Rumusan_Semua_Tempahan_DBHOSS_2026.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+    if (currentOrders.length === 0) {
+        if (typeof showAlert === 'function') {
+            showAlert("Tiada Data", "Tiada rekod untuk dieksport.", false);
+        } else {
+            alert("Tiada rekod untuk dieksport.");
         }
+        return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += "ID,Tahun,Kelas,Nama Murid,No Telefon,Pakej,Harga (RM),Kaedah Pembayaran,Nama Resit,Tarikh\n";
+
+    currentOrders.forEach(row => {
+        let orderId = row.orderId || row.id || '-';
+        let yr = row.year || '-';
+        let cls = row.class || '-';
+        let studentName = row.studentName || '-';
+        let parentPhone = row.parentPhone || '-';
+        let packageOpt = row.package || '-';
+        let price = row.price || 0;
+        let paymentMethod = row.paymentMethod || '-';
+        let receiptName = row.receiptName || '-';
+        let timestamp = row.timestamp || '-';
+
+        let line = `"${orderId}","${yr}","${cls}","${studentName}","${parentPhone}","${packageOpt}","${price}","${paymentMethod}","${receiptName}","${timestamp}"`;
+        csvContent += line + "\n";
+    });
+
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Rumusan_Semua_Tempahan_DBHOSS_2026.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
         function populateReportYearDropdown() {
             const select = document.getElementById('reportYearSelect');
