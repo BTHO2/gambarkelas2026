@@ -1338,23 +1338,26 @@ function tutupLoginGuru() {
     document.getElementById('modalLoginGuru').classList.add('hidden');
 }
         function semakPasswordAdmin() {
-    // Pastikan ID 'adminPasswordInput' ini sama dengan yang ada pada kod HTML input di atas
-    const passwordInput = document.getElementById('adminPasswordInput').value;
-    const errorMsg = document.getElementById('errorLoginAdmin');
-    
-    // Gantikan "PASSWORD_ANDA_DI_SINI" dengan kata laluan admin sebenar anda
-    const passwordAdminSebenar = "DBHOSS4055"; 
+    // 1. Ambil nilai dari input password admin
+    const inputVal = document.getElementById('adminPasswordInput').value;
+    const errorText = document.getElementById('errorLoginAdmin');
 
-    if (passwordInput === passwordAdminSebenar) {
-        // Jika betul, sembunyikan ralat dan buka menu admin
-        if (errorMsg) errorMsg.classList.add('hidden');
+    // 2. TETAPKAN KATA LAULAN ANDA DI SINI 
+    const kataLaluanBetul = "DBHOSS4055"; 
+
+    // 3. Semak sama ada kata laluan betul atau salah
+    if (inputVal === kataLaluanBetul) {
+        // Jika betul: Sembunyikan ralat, tutup modal, dan teruskan ke fungsi admin anda
+        if (errorText) errorText.classList.add('hidden');
+        document.getElementById('adminPasswordInput').value = ""; // Kosongkan balik input
         closeAdminModal();
         
-        // Letakkan fungsi seterusnya untuk buka panel admin di sini (cth: bukaDashboardAdmin())
-        alert("Log masuk admin berjaya!"); 
+        // PANGGIL FUNGSI MENU ADMIN ANDA DI SINI
+        // Contoh: bukaPanelAdmin(); atau paparSenaraiAdmin();
+        alert("Berjaya masuk admin!"); 
     } else {
-        // Jika salah, paparkan teks ralat merah
-        if (errorMsg) errorMsg.classList.remove('hidden');
+        // Jika salah: Paparkan teks ralat merah
+        if (errorText) errorText.classList.remove('hidden');
     }
 }
 
