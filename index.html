@@ -1048,200 +1048,208 @@ function openReceiptInspector(orderId) {
         }
 
  function downloadClassReportPDF() {
-            const yr = document.getElementById('reportYearSelect').value;
-            const cls = document.getElementById('reportClassSelect').value;
+    const yr = document.getElementById('reportYearSelect').value.trim();
+    const cls = document.getElementById('reportClassSelect').value.trim();
 
-            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
-            const filtered = ordersDB.filter(o => o.year === yr && o.class === cls);
+    // Ambil dari ordersDB global, jika kosong baru rujuk localStorage
+    let currentOrders = (typeof ordersDB !== 'undefined' && ordersDB.length > 0) 
+        ? ordersDB 
+        : (JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || []);
 
-            // Kira jumlah pakej berdasarkan data yang ditapis
-            let countPkgA = filtered.filter(ord => ord.package === "Pakej A").length;
-            let countPkgB = filtered.filter(ord => ord.package === "Pakej B").length;
-            let countPkgC = filtered.filter(ord => ord.package === "Pakej C").length;
-            let totalClassAmount = filtered.reduce((sum, item) => sum + Number(item.price || 0), 0);
+    // Tapis dengan membersihkan ruang kosong & abaikan sensitiviti huruf
+    const filtered = currentOrders.filter(o => 
+        String(o.year || "").trim().toLowerCase() === yr.toLowerCase() && 
+        String(o.class || "").trim().toLowerCase() === cls.toLowerCase()
+    );
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+    let countPkgA = filtered.filter(ord => String(ord.package).trim() === "Pakej A").length;
+    let countPkgB = filtered.filter(ord => String(ord.package).trim() === "Pakej B").length;
+    let countPkgC = filtered.filter(ord => String(ord.package).trim() === "Pakej C").length;
+    let totalClassAmount = filtered.reduce((sum, item) => sum + Number(item.price || 0), 0);
 
-            doc.setFillColor(30, 27, 75);
-            doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(14);
-            doc.text("RUMUSAN TEMPAHAN GAMBAR KELAS 2026", 14, 18);
-            doc.setFontSize(10);
-            doc.text(`Tahun: ${yr} | Kelas: ${cls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-            let tableData = filtered.map((item, idx) => [
-                idx + 1,
-                item.studentName,
-                item.parentPhone,
-                item.package,
-                `RM ${item.price}`,
-                item.paymentMethod
-            ]);
+    doc.setFillColor(30, 27, 75);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.text("RUMUSAN TEMPAHAN GAMBAR KELAS 2026", 14, 18);
+    doc.setFontSize(10);
+    doc.text(`Tahun: ${yr} | Kelas: ${cls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
 
-            if (tableData.length === 0) {
-                tableData.push(["-", "Tiada rekod tempahan untuk kelas ini", "-", "-", "-", "-"]);
-            }
+    let tableData = filtered.map((item, idx) => [
+        idx + 1,
+        item.studentName || '-',
+        item.parentPhone || '-',
+        item.package || '-',
+        `RM ${item.price || 0}`,
+        item.paymentMethod || '-'
+    ]);
 
-            doc.autoTable({
-                startY: 50,
-                head: [["Bil", "Nama Murid", "No. Tel", "Pakej", "Harga", "Bayaran"]],
-                body: tableData,
-                theme: 'grid',
-                headStyles: { fillColor: [30, 27, 75] },
-                styles: { fontSize: 8 }
-            });            
+    if (tableData.length === 0) {
+        tableData.push(["-", "Tiada rekod tempahan untuk kelas ini", "-", "-", "-", "-"]);
+    }
 
-            let finalY = doc.lastAutoTable.finalY + 10;
-            
-            // Lukis kotak latar belakang untuk rumusan (Summary Box)
-            doc.setFillColor(241, 245, 249); 
-            doc.roundedRect(14, finalY, 182, 26, 3, 3, 'F');
+    doc.autoTable({
+        startY: 50,
+        head: [["Bil", "Nama Murid", "No. Tel", "Pakej", "Harga", "Bayaran"]],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [30, 27, 75] },
+        styles: { fontSize: 8 }
+    });            
 
-            doc.setTextColor(30, 30, 30);
-            doc.setFontSize(9);
-            
-            // Paparan teks pakej mengikut kesesuaian (Jika Tahun 6, paparkan Pakej C sahaja atau ikut data yang ada)
-            let packageSummaryText = `Jumlah Tempahan: ${filtered.length} orang  |  `;
-            if (yr.includes("Tahun 6")) {
-                packageSummaryText += `Pakej C: ${countPkgC} unit`;
-            } else {
-                packageSummaryText += `Pakej A: ${countPkgA} unit  |  Pakej B: ${countPkgB} unit`;
-            }
+    let finalY = doc.lastAutoTable.finalY + 10;
+    
+    doc.setFillColor(241, 245, 249); 
+    doc.roundedRect(14, finalY, 182, 26, 3, 3, 'F');
 
-            doc.text(packageSummaryText, 20, finalY + 8);
-            
-            doc.setFont(undefined, 'bold');
-            doc.setFontSize(10);
-            doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
+    doc.setTextColor(30, 30, 30);
+    doc.setFontSize(9);
+    
+    let packageSummaryText = `Jumlah Tempahan: ${filtered.length} orang  |  `;
+    if (yr.toLowerCase().includes("tahun 6")) {
+        packageSummaryText += `Pakej C: ${countPkgC} unit`;
+    } else {
+        packageSummaryText += `Pakej A: ${countPkgA} unit  |  Pakej B: ${countPkgB} unit`;
+    }
 
-            doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
-        }
+    doc.text(packageSummaryText, 20, finalY + 8);
+    
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(10);
+    doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
+
+    doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
+}
 
 function downloadMasterAdminReportPDF() {
-            ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
+    // Utamakan ordersDB global, fallback ke localStorage jika kosong
+    let currentOrders = (typeof ordersDB !== 'undefined' && ordersDB.length > 0) 
+        ? ordersDB 
+        : (JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || []);
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape'); // Landscape kerana jadual lebar
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape');
 
-            // Header Laporan Master Admin
-            doc.setFillColor(30, 27, 75);
-            doc.rect(0, 0, 297, 35, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(14);
-            doc.text("RUMUSAN KESELURUHAN TEMPAHAN GAMBAR KELAS TAHUN 2026", 14, 15);
-            doc.setFontSize(10);
-            doc.text(`SK Bandar Tun Hussein Onn 2 (SKBTHO2) | Tarikh Cetakan: ${new Date().toLocaleDateString()}`, 14, 25);
+    doc.setFillColor(30, 27, 75);
+    doc.rect(0, 0, 297, 35, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(14);
+    doc.text("RUMUSAN KESELURUHAN TEMPAHAN GAMBAR KELAS TAHUN 2026", 14, 15);
+    doc.setFontSize(10);
+    doc.text(`SK Bandar Tun Hussein Onn 2 (SKBTHO2) | Tarikh Cetakan: ${new Date().toLocaleDateString()}`, 14, 25);
 
-            let tableData = [];
-            let gTotalPkgA = 0, gTotalPkgB = 0, gTotalPkgC = 0;
-            let gTotalCash = 0, gTotalQR = 0, gTotalAll = 0;
+    let tableData = [];
+    let gTotalPkgA = 0, gTotalPkgB = 0, gTotalPkgC = 0;
+    let gTotalCash = 0, gTotalQR = 0, gTotalAll = 0;
 
-            // Semak classMap dan gabungkan Nama Tahun + Nama Kelas (Cth: "Tahun 6 - Jasmine")
-            if (typeof classMap !== 'undefined') {
-                for (let yr in classMap) {
-                    if (Array.isArray(classMap[yr])) {
-                        classMap[yr].forEach(clsName => {
-                            // Tapis order berdasarkan tahun DAN kelas supaya tepat
-                            let classOrders = ordersDB.filter(o => 
-                                String(o.year).trim().toLowerCase() === String(yr).trim().toLowerCase() && 
-                                String(o.class).trim().toLowerCase() === String(clsName).trim().toLowerCase()
-                            );
-                            
-                            let pkgA = classOrders.filter(o => o.package === "Pakej A").length;
-                            let pkgB = classOrders.filter(o => o.package === "Pakej B").length;
-                            let pkgC = classOrders.filter(o => o.package === "Pakej C").length;
+    if (typeof classMap !== 'undefined') {
+        for (let yr in classMap) {
+            if (Array.isArray(classMap[yr])) {
+                classMap[yr].forEach(clsName => {
+                    // Penapisan selamat menggunakan trim() dan toLowerCase()
+                    let classOrders = currentOrders.filter(o => 
+                        String(o.year || "").trim().toLowerCase() === String(yr).trim().toLowerCase() && 
+                        String(o.class || "").trim().toLowerCase() === String(clsName).trim().toLowerCase()
+                    );
+                    
+                    let pkgA = classOrders.filter(o => String(o.package).trim() === "Pakej A").length;
+                    let pkgB = classOrders.filter(o => String(o.package).trim() === "Pakej B").length;
+                    let pkgC = classOrders.filter(o => String(o.package).trim() === "Pakej C").length;
 
-                            let cashSum = classOrders
-                                .filter(o => String(o.paymentMethod).toLowerCase().includes("tunai") || String(o.paymentMethod).toLowerCase().includes("cash"))
-                                .reduce((sum, o) => sum + Number(o.price || 0), 0);
+                    let cashSum = classOrders
+                        .filter(o => {
+                            let m = String(o.paymentMethod || "").toLowerCase();
+                            return m.includes("tunai") || m.includes("cash");
+                        })
+                        .reduce((sum, o) => sum + Number(o.price || 0), 0);
 
-                            let qrSum = classOrders
-                                .filter(o => String(o.paymentMethod).toLowerCase().includes("qr") || String(o.paymentMethod).toLowerCase().includes("duitnow"))
-                                .reduce((sum, o) => sum + Number(o.price || 0), 0);
+                    let qrSum = classOrders
+                        .filter(o => {
+                            let m = String(o.paymentMethod || "").toLowerCase();
+                            return m.includes("qr") || m.includes("duitnow");
+                        })
+                        .reduce((sum, o) => sum + Number(o.price || 0), 0);
 
-                            let totalRow = classOrders.reduce((sum, o) => sum + Number(o.price || 0), 0);
+                    let totalRow = classOrders.reduce((sum, o) => sum + Number(o.price || 0), 0);
 
-                            gTotalPkgA += pkgA;
-                            gTotalPkgB += pkgB;
-                            gTotalPkgC += pkgC;
-                            gTotalCash += cashSum;
-                            gTotalQR += qrSum;
-                            gTotalAll += totalRow;
+                    gTotalPkgA += pkgA;
+                    gTotalPkgB += pkgB;
+                    gTotalPkgC += pkgC;
+                    gTotalCash += cashSum;
+                    gTotalQR += qrSum;
+                    gTotalAll += totalRow;
 
-                            // Gabungkan paparan Tahun dan Kelas pada kolum Nama Kelas
-                            let displayClassName = `${yr} - ${clsName}`;
+                    let displayClassName = `${yr} - ${clsName}`;
 
-                            tableData.push([
-                                tableData.length + 1,
-                                displayClassName,
-                                pkgA,
-                                pkgB,
-                                pkgC,
-                                `RM ${cashSum}`,
-                                `RM ${qrSum}`,
-                                `RM ${totalRow}`
-                            ]);
-                        });
-                    }
-                }
+                    tableData.push([
+                        tableData.length + 1,
+                        displayClassName,
+                        pkgA,
+                        pkgB,
+                        pkgC,
+                        `RM ${cashSum}`,
+                        `RM ${qrSum}`,
+                        `RM ${totalRow}`
+                    ]);
+                });
             }
-
-            // Baris Grand Total di bawah sekali
-            tableData.push([
-                "JUM",
-                "KESELURUHAN",
-                gTotalPkgA,
-                gTotalPkgB,
-                gTotalPkgC,
-                `RM ${gTotalCash}`,
-                `RM ${gTotalQR}`,
-                `RM ${gTotalAll}`
-            ]);
-
-            doc.autoTable({
-                startY: 45,
-                head: [["Bil", "Nama Kelas", "Pakej A", "Pakej B", "Pakej C", "Tunai", "QR DBHOSS", "Jumlah (RM)"]],
-                body: tableData,
-                theme: 'grid',
-                headStyles: { 
-                    fillColor: [30, 27, 75], 
-                    halign: 'center',
-                    textColor: [255, 255, 255] // Header kekal putih
-                },
-                columnStyles: {
-                    0: { halign: 'center', cellWidth: 15 },
-                    1: { cellWidth: 50 },
-                    2: { halign: 'center', cellWidth: 25 },
-                    3: { halign: 'center', cellWidth: 25 },
-                    4: { halign: 'center', cellWidth: 25 },
-                    5: { halign: 'right', cellWidth: 40 },
-                    6: { halign: 'right', cellWidth: 40 },
-                    7: { halign: 'right', cellWidth: 47 }
-                },
-                didParseCell: function (data) {
-                    // Paksa semua teks dalam sel badan jadual menjadi warna HITAM [0, 0, 0]
-                    if (data.section === 'body') {
-                        data.cell.styles.textColor = [0, 0, 0];
-                    }
-                    // Baris Grand Total di bawah sekali (latar belakang kelabu cair, teks hitam tebal)
-                    if (data.row.index === tableData.length - 1) {
-                        data.cell.styles.fillColor = [241, 245, 249];
-                        data.cell.styles.fontStyle = 'bold';
-                        data.cell.styles.textColor = [0, 0, 0];
-                    }
-                },
-                styles: { 
-                    fontSize: 9,
-                    textColor: [0, 0, 0], // Tetapan asas teks hitam
-                    lineColor: [150, 150, 150], // Warna garis grid (boleh laras jika nak lebih gelap)
-                    lineWidth: 0.1
-                }
-            });
-
-            doc.save(`Rumusan_Master_Gambar_Kelas_SKBTHO22026.pdf`);
         }
+    }
+
+    tableData.push([
+        "JUM",
+        "KESELURUHAN",
+        gTotalPkgA,
+        gTotalPkgB,
+        gTotalPkgC,
+        `RM ${gTotalCash}`,
+        `RM ${gTotalQR}`,
+        `RM ${gTotalAll}`
+    ]);
+
+    doc.autoTable({
+        startY: 45,
+        head: [["Bil", "Nama Kelas", "Pakej A", "Pakej B", "Pakej C", "Tunai", "QR DBHOSS", "Jumlah (RM)"]],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { 
+            fillColor: [30, 27, 75], 
+            halign: 'center',
+            textColor: [255, 255, 255] 
+        },
+        columnStyles: {
+            0: { halign: 'center', cellWidth: 15 },
+            1: { cellWidth: 50 },
+            2: { halign: 'center', cellWidth: 25 },
+            3: { halign: 'center', cellWidth: 25 },
+            4: { halign: 'center', cellWidth: 25 },
+            5: { halign: 'right', cellWidth: 40 },
+            6: { halign: 'right', cellWidth: 40 },
+            7: { halign: 'right', cellWidth: 47 }
+        },
+        didParseCell: function (data) {
+            if (data.section === 'body') {
+                data.cell.styles.textColor = [0, 0, 0];
+            }
+            if (data.row.index === tableData.length - 1) {
+                data.cell.styles.fillColor = [241, 245, 249];
+                data.cell.styles.fontStyle = 'bold';
+                data.cell.styles.textColor = [0, 0, 0];
+            }
+        },
+        styles: { 
+            fontSize: 9,
+            textColor: [0, 0, 0], 
+            lineColor: [150, 150, 150], 
+            lineWidth: 0.1 
+        }
+    });
+
+    doc.save(`Rumusan_Gambar_Kelas_SKBTHO22026.pdf`);
+}
         
         function showAlert(title, message, isSuccess = true) {
             document.getElementById('alertModal').classList.remove('hidden');
