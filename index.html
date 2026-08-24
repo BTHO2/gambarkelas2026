@@ -379,13 +379,13 @@
             <button onclick="closeImageViewer()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl text-xs font-semibold shadow">Tutup</button>
         </div>
     </div>
-    <!-- ADMIN PASSWORD & SUMMARY MODAL (Dibaiki dengan ID asal) -->
+    <!-- ADMIN PASSWORD & SUMMARY MODAL (Dibaiki sepenuhnya) -->
 <div id="adminModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl relative space-y-4">
         
-        <!-- Password View -->
+        <!-- 1. Kotak Log Masuk (Pass Box) -->
         <div id="adminPassBox" class="space-y-4">
-            <!-- Password View Header -->
+            <!-- Header -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
@@ -408,12 +408,17 @@
                 <p id="adminError" class="text-xs text-rose-500 font-medium hidden mt-1">Kata laluan salah. Sila cuba lagi.</p>
             </div>
 
-            <!-- Butang Log Masuk Lebar Penuh ke Bawah -->
+            <!-- Butang Log Masuk -->
             <div class="pt-2">
                 <button onclick="verifyAdminPassword()" class="w-full py-3 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md transition">
                     Log Masuk
                 </button>
             </div>
+        </div>
+
+        <!-- 2. Kotak Dashboard Selepas Berjaya Log Masuk (Wajib ada supaya tak kosong) -->
+        <div id="adminDashboardBox" class="hidden space-y-4">
+            <!-- Kandungan dashboard anda akan dimuatkan di sini oleh loadAdminDashboard() -->
         </div>
 
     </div>
