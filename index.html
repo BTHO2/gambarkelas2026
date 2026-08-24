@@ -881,7 +881,7 @@ if (new Date().getTime() > tarikhTutup) {
             document.getElementById('adminModal').classList.add('hidden');
         }
 
-        function verifyAdminPassword() {
+        function semakPasswordAdmin() {
             const val = document.getElementById('adminPasswordInput').value;
             if (val === ADMIN_PASS) {
                 document.getElementById('adminPassBox').classList.add('hidden');
@@ -1337,30 +1337,7 @@ function bukaLoginGuru() {
 function tutupLoginGuru() {
     document.getElementById('modalLoginGuru').classList.add('hidden');
 }
-        function semakPasswordAdmin() {
-    // 1. Ambil nilai dari input password admin
-    const inputVal = document.getElementById('adminPasswordInput').value;
-    const errorText = document.getElementById('errorLoginAdmin');
-
-    // 2. TETAPKAN KATA LAULAN ANDA DI SINI 
-    const kataLaluanBetul = "DBHOSS4055"; 
-
-    // 3. Semak sama ada kata laluan betul atau salah
-    if (inputVal === kataLaluanBetul) {
-        // Jika betul: Sembunyikan ralat, tutup modal, dan teruskan ke fungsi admin anda
-        if (errorText) errorText.classList.add('hidden');
-        document.getElementById('adminPasswordInput').value = ""; // Kosongkan balik input
-        closeAdminModal();
         
-        // PANGGIL FUNGSI MENU ADMIN ANDA DI SINI
-        // Contoh: bukaPanelAdmin(); atau paparSenaraiAdmin();
-        alert("Berjaya masuk admin!"); 
-    } else {
-        // Jika salah: Paparkan teks ralat merah
-        if (errorText) errorText.classList.remove('hidden');
-    }
-}
-
 function semakPasswordGuru() {
     const pwd = document.getElementById('passwordGuru').value;
     const errorText = document.getElementById('errorLoginGuru');
