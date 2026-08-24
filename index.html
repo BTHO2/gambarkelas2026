@@ -1048,21 +1048,26 @@ function openReceiptInspector(orderId) {
         }
 
 function downloadClassReportPDF() {
-    const yr = document.getElementById('reportYearSelect').value.trim();
-    const cls = document.getElementById('reportClassSelect').value.trim();
+    const rawYr = document.getElementById('reportYearSelect').value;
+    const rawCls = document.getElementById('reportClassSelect').value;
+
+    console.log("Nilai dipilih - Tahun:", rawYr, "| Kelas:", rawCls);
 
     let ordersDB = JSON.parse(localStorage.getItem("dbhoss_orders_2026")) || [];
-    
-    // Tapis dengan ketat menggunakan trim dan toLowerCase untuk elak isu tercicir ruang kosong
-    const filtered = ordersDB.filter(o => 
-        String(o.year || "").trim().toLowerCase() === yr.toLowerCase() && 
-        String(o.class || "").trim().toLowerCase() === cls.toLowerCase()
-    );
+    console.log("Jumlah keseluruhan data dalam localStorage:", ordersDB.length);
 
-    // Kira jumlah pakej berdasarkan data yang ditapis
-    let countPkgA = filtered.filter(ord => String(ord.package).trim().toLowerCase() === "pakej a").length;
-    let countPkgB = filtered.filter(ord => String(ord.package).trim().toLowerCase() === "pakej b").length;
-    let countPkgC = filtered.filter(ord => String(ord.package).trim().toLowerCase() === "pakej c").length;
+    // Tapis menggunakan padanan yang lebih fleksibel
+    const filtered = ordersDB.filter(o => {
+        let matchYear = String(o.year || "").trim().toLowerCase().includes(String(rawYr).trim().toLowerCase());
+        let matchClass = String(o.class || "").trim().toLowerCase().includes(String(rawCls).trim().toLowerCase());
+        return matchYear && matchClass;
+    });
+
+    console.log("Data selepas ditapis untuk PDF kelas:", filtered.length);
+
+    let countPkgA = filtered.filter(ord => String(ord.package).trim().toLowerCase().includes("pakej a")).length;
+    let countPkgB = filtered.filter(ord => String(ord.package).trim().toLowerCase().includes("pakej b")).length;
+    let countPkgC = filtered.filter(ord => String(ord.package).trim().toLowerCase().includes("pakej c")).length;
     let totalClassAmount = filtered.reduce((sum, item) => sum + Number(item.price || 0), 0);
 
     const { jsPDF } = window.jspdf;
@@ -1074,19 +1079,19 @@ function downloadClassReportPDF() {
     doc.setFontSize(14);
     doc.text("RUMUSAN TEMPAHAN GAMBAR KELAS 2026", 14, 18);
     doc.setFontSize(10);
-    doc.text(`Tahun: ${yr} | Kelas: ${cls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
+    doc.text(`Tahun: ${rawYr} | Kelas: ${rawCls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
 
     let tableData = filtered.map((item, idx) => [
         idx + 1,
-        item.studentName || "-",
-        item.parentPhone || "-",
+        item.studentName || item.nama || "-",
+        item.parentPhone || item.telefon || "-",
         item.package || "-",
         `RM ${item.price || 0}`,
         item.paymentMethod || "-"
     ]);
 
     if (tableData.length === 0) {
-        tableData.push(["-", "Tiada rekod tempahan untuk kelas ini", "-", "-", "-", "-"]);
+        tableData.push(["-", "Tiada rekod padanan dijumpai untuk kelas ini", "-", "-", "-", "-"]);
     }
 
     doc.autoTable({
@@ -1107,7 +1112,7 @@ function downloadClassReportPDF() {
     doc.setFontSize(9);
     
     let packageSummaryText = `Jumlah Tempahan: ${filtered.length} orang  |  `;
-    if (yr.toLowerCase().includes("6")) {
+    if (String(rawYr).toLowerCase().includes("6")) {
         packageSummaryText += `Pakej C: ${countPkgC} unit`;
     } else {
         packageSummaryText += `Pakej A: ${countPkgA} unit  |  Pakej B: ${countPkgB} unit`;
@@ -1117,9 +1122,9 @@ function downloadClassReportPDF() {
     
     doc.setFont(undefined, 'bold');
     doc.setFontSize(10);
-    doc.text(`Jumlah Keseluruhan Kutipan Kelas ${cls} (${yr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
+    doc.text(`Jumlah Keseluruhan Kutipan Kelas ${rawCls} (${rawYr}): RM ${totalClassAmount}.00`, 20, finalY + 18);
 
-    doc.save(`Rumusan_Gambar_${yr.replace(/\s+/g, '')}_${cls.replace(/\s+/g, '_')}.pdf`);
+    doc.save(`Rumusan_Gambar_${String(rawYr).replace(/\s+/g, '')}_${String(rawCls).replace(/\s+/g, '_')}.pdf`);
 }
 
 function downloadMasterAdminReportPDF() {
