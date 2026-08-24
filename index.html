@@ -379,11 +379,11 @@
             <button onclick="closeImageViewer()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl text-xs font-semibold shadow">Tutup</button>
         </div>
     </div>
-    <!-- ADMIN PASSWORD & SUMMARY MODAL (Dibaiki sepenuhnya) -->
+<!-- ADMIN PASSWORD & SUMMARY MODAL (Lengkap & Disamakan Saiz) -->
 <div id="adminModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl relative space-y-4">
         
-        <!-- 1. Kotak Log Masuk (Pass Box) -->
+        <!-- 1. Kotak Log Masuk (Dicipta seragam dengan Guru Kelas) -->
         <div id="adminPassBox" class="space-y-4">
             <!-- Header -->
             <div class="flex items-center justify-between">
@@ -416,82 +416,75 @@
             </div>
         </div>
 
-        <!-- 2. Kotak Dashboard Selepas Berjaya Log Masuk (Wajib ada supaya tak kosong) -->
-        <div id="adminDashboardBox" class="hidden space-y-4">
-            <!-- Kandungan dashboard anda akan dimuatkan di sini oleh loadAdminDashboard() -->
+        <!-- 2. Kotak Dashboard Rumusan & Statistik (Kandungan asal anda dikekalkan 100%) -->
+        <div id="adminDashboardBox" class="space-y-4 hidden max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div>
+                    <h3 class="font-bold text-base text-slate-900">Rumusan & Statistik Tempahan</h3>
+                    <p class="text-[11px] text-slate-500">SK Bandar Tun Hussein Onn 2 (SKBTHO2)</p>
+                </div>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                    <span class="text-[11px] text-indigo-600 font-semibold block">Jumlah Tempahan</span>
+                    <h4 id="statTotalOrders" class="text-2xl font-extrabold text-indigo-900 mt-1">0</h4>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                    <span class="text-[11px] text-emerald-600 font-semibold block">Anggaran Kutipan</span>
+                    <h4 id="statTotalAmount" class="text-2xl font-extrabold text-emerald-900 mt-1">RM 0</h4>
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <h4 class="text-xs font-bold text-slate-700 uppercase">Muat Turun Laporan / Rumusan Kelas</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <select id="reportYearSelect" onchange="populateReportClassDropdown()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                    </select>
+                    <select id="reportClassSelect" class="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                    </select>
+                    <button onclick="downloadClassReportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>PDF Kelas</span>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="downloadMasterAdminReportPDF()" class="w-full mt-2 bg-slate-800 hover:bg-slate-900 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow flex items-center justify-center space-x-1.5 transition">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span>Laporan Keseluruhan (PDF)</span>
+            </button>
+
+            <div class="pt-2 flex justify-between items-center">
+                <h4 class="text-xs font-bold text-slate-700 uppercase">Senarai Tempahan Terkini</h4>
+                <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center space-x-1">
+                    <i class="fa-solid fa-file-excel"></i>
+                    <span>Fail CSV</span>
+                </button>
+            </div>
+
+            <div class="border rounded-2xl overflow-hidden max-h-48 overflow-y-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-100 text-slate-700 sticky top-0">
+                        <tr>
+                            <th class="p-2.5">Murid</th>
+                            <th class="p-2.5">Kelas</th>
+                            <th class="p-2.5">Pembayaran</th>
+                            <th class="p-2.5 text-center">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="divide-y divide-slate-100">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button onclick="closeAdminModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl text-xs font-semibold shadow">Tutup</button>
         </div>
 
     </div>
 </div>
-
-            <!-- Dashboard View -->
-            <div id="adminDashboardBox" class="p-6 space-y-4 hidden max-h-[80vh] overflow-y-auto">
-                <div class="flex justify-between items-center border-b pb-3">
-                    <div>
-                        <h3 class="font-bold text-base text-slate-900">Rumusan & Statistik Tempahan</h3>
-                        <p class="text-[11px] text-slate-500">SK Bandar Tun Hussein Onn 2 (SKBTHO2)</p>
-                    </div>
-                    <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
-                        <span class="text-[11px] text-indigo-600 font-semibold block">Jumlah Tempahan</span>
-                        <h4 id="statTotalOrders" class="text-2xl font-extrabold text-indigo-900 mt-1">0</h4>
-                    </div>
-                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                        <span class="text-[11px] text-emerald-600 font-semibold block">Anggaran Kutipan</span>
-                        <h4 id="statTotalAmount" class="text-2xl font-extrabold text-emerald-900 mt-1">RM 0</h4>
-                    </div>
-                </div>
-
-                <div class="space-y-2 pt-2">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase">Muat Turun Laporan / Rumusan Kelas</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <select id="reportYearSelect" onchange="populateReportClassDropdown()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
-                        </select>
-                        <select id="reportClassSelect" class="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
-                        </select>
-                        <button onclick="downloadClassReportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow flex items-center justify-center space-x-1">
-                            <i class="fa-solid fa-file-pdf"></i>
-                            <span>PDF Kelas</span>
-                        </button>
-                    </div>
-                </div>
-
-               <button onclick="downloadMasterAdminReportPDF()" class="w-full mt-2 bg-slate-800 hover:bg-slate-900 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow flex items-center justify-center space-x-1.5 transition">
-    <i class="fa-solid fa-file-arrow-down"></i>
-    <span>Laporan Keseluruhan (PDF)</span>
-</button>
-
-                <div class="pt-2 flex justify-between items-center">
-                    <h4 class="text-xs font-bold text-slate-700 uppercase">Senarai Tempahan Terkini</h4>
-                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow flex items-center space-x-1">
-                        <i class="fa-solid fa-file-excel"></i>
-                        <span>Fail CSV</span>
-                    </button>
-                </div>
-
-                <div class="border rounded-2xl overflow-hidden max-h-48 overflow-y-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-100 text-slate-700 sticky top-0">
-                            <tr>
-                                <th class="p-2.5">Murid</th>
-                                <th class="p-2.5">Kelas</th>
-                                <th class="p-2.5">Pembayaran</th>
-                                <th class="p-2.5 text-center">Tindakan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody" class="divide-y divide-slate-100">
-                            <!-- Populated via JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <button onclick="closeAdminModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl text-xs font-semibold shadow">Tutup</button>
-            </div>
-        </div>
-    </div>
 
     <!-- RECEIPT INSPECTOR MODAL -->
     <div id="receiptModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
