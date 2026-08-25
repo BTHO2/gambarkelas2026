@@ -1097,14 +1097,19 @@ function openReceiptInspector(orderId) {
     doc.setFontSize(10);
     doc.text(`Tahun: ${yr} | Kelas: ${cls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
 
-    let tableData = filtered.map((item, idx) => [
-        idx + 1,
-        item.studentName || '-',
-        item.parentPhone || '-',
-        item.package || '-',
-        `RM ${item.price || 0}`,
-        item.paymentMethod || '-'
-    ]);
+  let tableData = filtered.map((item, idx) => {
+        // Pastikan nombor telefon dibersihkan atau dipaparkan dengan selamat
+        let phone = item.parentPhone ? String(item.parentPhone).trim() : '-';
+        
+        return [
+            idx + 1,
+            String(item.studentName || '-').trim(),
+            phone,
+            String(item.package || '-').trim(),
+            `RM ${Number(item.price || 0)}`,
+            String(item.paymentMethod || '-').trim()
+        ];
+    });
 
     if (tableData.length === 0) {
         tableData.push(["-", "Tiada rekod tempahan untuk kelas ini", "-", "-", "-", "-"]);
