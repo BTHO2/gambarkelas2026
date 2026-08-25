@@ -1097,13 +1097,15 @@ let rawPhone = String(ord.parentPhone || '').replace(/\D/g, '');
     doc.text(`Tahun: ${yr} | Kelas: ${cls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
 
 let tableData = filtered.map((item, idx) => {
-        // Paksa nombor telefon dibaca sebagai teks supaya '0' di depan tidak hilang
-        let phoneNum = item.parentPhone ? String(item.parentPhone).trim() : '-';
+        // Paksa nombor telefon dibaca sebagai teks tulen supaya nombor '0' di depan tidak hilang
+        let rawPhone = item.parentPhone ? String(item.parentPhone).trim() : '-';
+        // Pastikan jika nombor ada '0' di depan, ia kekal dipaparkan
+        let formattedPhone = rawPhone.startsWith('0') || rawPhone.startsWith('+') ? rawPhone : (rawPhone !== '-' ? '0' + rawPhone : '-');
 
         return [
             idx + 1,
             item.studentName || '-',
-            phoneNum, // Guna pemboleh ubah teks di sini
+            formattedPhone, // Guna nombor yang sudah dipaksa ada '0' di sini
             item.package || '-',
             `RM ${item.price || 0}`,
             item.paymentMethod || '-'
