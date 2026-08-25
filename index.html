@@ -1096,17 +1096,17 @@ let cleanPhone = rawPhone.startsWith('0') ? rawPhone.substring(1) : rawPhone;
     doc.setFontSize(10);
     doc.text(`Tahun: ${yr} | Kelas: ${cls} - SK Bandar Tun Hussein Onn 2 (SKBTHO2)`, 14, 28);
 
-  let tableData = filtered.map((item, idx) => {
-        // Pastikan nombor telefon dibersihkan atau dipaparkan dengan selamat
-        let phone = item.parentPhone ? String(item.parentPhone).trim() : '-';
-        
+let tableData = filtered.map((item, idx) => {
+        // Paksa nombor telefon dibaca sebagai teks supaya '0' di depan tidak hilang
+        let phoneNum = item.parentPhone ? String(item.parentPhone).trim() : '-';
+
         return [
             idx + 1,
-            String(item.studentName || '-').trim(),
-            phone,
-            String(item.package || '-').trim(),
-            `RM ${Number(item.price || 0)}`,
-            String(item.paymentMethod || '-').trim()
+            item.studentName || '-',
+            phoneNum, // Guna pemboleh ubah teks di sini
+            item.package || '-',
+            `RM ${item.price || 0}`,
+            item.paymentMethod || '-'
         ];
     });
 
