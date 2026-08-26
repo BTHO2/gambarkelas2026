@@ -1296,72 +1296,73 @@ function downloadMasterAdminReportPDF() {
         // Pangkalan data pautan Imgur untuk setiap kelas (Contoh format: "Tahun - NamaKelas": "URL_Imgur")
 // Anda boleh masukkan 62 pautan Imgur kelas anda di sini nanti:
 const imgurKelasMap = {
-    "PPKI - 1 Dahlia": "https://imgur.com/tJ8QVt2.png",
-    "PPKI - 1 Rafflesia": "https://imgur.com/tJ8QVt2.png",
-    "PPKI - 2 Rafflesia": "https://imgur.com/T5YmX17.png",
-    "PPKI - 4 Rafflesia": "https://imgur.com/IZmusgd.png",
-    "PPKI - 5 Rafflesia": "https://imgur.com/NCWq8ON.png",
-    "Tahun 1 - Jasmine": "https://imgur.com/eNbxG4X.png",
-    "Tahun 1 - Hibiscus": "https://imgur.com/FWgN8WY.png",
-    "Tahun 1 - Sunflower": "https://imgur.com/x2iurLo.png",
-    "Tahun 1 - Lavender": "https://imgur.com/ejVxqgc.png",
-    "Tahun 1 - Tulip": "https://imgur.com/dNNbPSG.png",
-    "Tahun 1 - Daisy": "https://imgur.com/YH6yP5l.png",
-    "Tahun 1 - Sakura": "https://imgur.com/u8F1vI5.png",
-    "Tahun 1 - Rose": "https://imgur.com/RTEKlSZ.png",
-    "Tahun 1 - Orchid": "https://imgur.com/RHCQqt2.png",
-    "Tahun 1 - Lily": "https://imgur.com/SqcoyIo.png",
-    "Tahun 2 - Jasmine": "https://imgur.com/5MyCov5.png",
-    "Tahun 2 - Hibiscus": "https://imgur.com/WwcF9Fm.png",
-    "Tahun 2 - Sunflower": "https://imgur.com/qPT8pJr.png",
-    "Tahun 2 - Lavender": "https://imgur.com/kIbngoX.png",
-    "Tahun 2 - Tulip": "https://imgur.com/QI5OPNv.png",
-    "Tahun 2 - Daisy": "https://imgur.com/5Mx00Zl.png",
-    "Tahun 2 - Sakura": "https://imgur.com/N4rRFqY.png",
-    "Tahun 2 - Rose": "https://imgur.com/ibrQbgT.png",
-    "Tahun 2 - Orchid": "https://imgur.com/DAnt73C.png",
-    "Tahun 3 - Jasmine": "https://imgur.com/kkaSz93.png",
-    "Tahun 3 - Hibiscus": "https://imgur.com/dl8F0Fx.png",
-    "Tahun 3 - Sunflower": "https://imgur.com/NCs9vfU.png",
-    "Tahun 3 - Lavender": "https://imgur.com/5SAliLk.png",
-    "Tahun 3 - Tulip": "https://imgur.com/4Kit8fc.png",
-    "Tahun 3 - Daisy": "https://imgur.com/OpRCUHb.png",
-    "Tahun 3 - Sakura": "https://imgur.com/s8EbvPl.png",
-    "Tahun 3 - Rose": "https://imgur.com/m43fiyl.png",
-    "Tahun 3 - Orchid": "https://imgur.com/AcIqUsR.png",
-    "Tahun 3 - Lily": "https://imgur.com/D8U0GZe.png",
-    "Tahun 4 - Jasmine": "https://imgur.com/dcJ48wg.png",
-    "Tahun 4 - Hibiscus": "https://imgur.com/ylS55Gf.png",
-    "Tahun 4 - Sunflower": "https://imgur.com/6aCLcb6.png",
-    "Tahun 4 - Lavender": "https://imgur.com/p7TZbbB.png",
-    "Tahun 4 - Tulip": "https://imgur.com/RioSbeV.png",
-    "Tahun 4 - Daisy": "https://imgur.com/tzd10rI.png",
-    "Tahun 4 - Sakura": "https://imgur.com/GHxkyL9.png",
-    "Tahun 4 - Rose": "https://imgur.com/rJvdy2x.png",
-    "Tahun 4 - Orchid": "https://imgur.com/uUJyHi5.png",
-    "Tahun 5 - Jasmine": "https://imgur.com/jXA2QEC.png",
-    "Tahun 5 - Hibiscus": "https://imgur.com/jtz7igj.png",
-    "Tahun 5 - Sunflower": "https://imgur.com/8m1Ax2L.png",
-    "Tahun 5 - Lavender": "https://imgur.com/Aks7KN3.png",
-    "Tahun 5 - Tulip": "https://imgur.com/fIvyuIa.png",
-    "Tahun 5 - Daisy": "https://imgur.com/vjTiidC.png",
-    "Tahun 5 - Sakura": "https://imgur.com/0g439ug.png",
-    "Tahun 5 - Rose": "https://imgur.com/rDs7Xqa.png",
-    "Tahun 5 - Orchid": "https://imgur.com/XNeBd46.png",
-    "Tahun 5 - Lily": "https://imgur.com/ZRjvafT.png",
-    "Tahun 6 - Jasmine (1)": "https://imgur.com/DapmYFE.png",
-    "Tahun 6 - Jasmine (2)": "https://imgur.com/vrCE7JT.png",
-    "Tahun 6 - Hibiscus": "https://imgur.com/C3fxNPt.png",
-    "Tahun 6 - Sunflower": "https://imgur.com/8Ziac5G.png",
-    "Tahun 6 - Lavender (1)": "https://imgur.com/omKOUNs.png",
-    "Tahun 6 - Lavender (2)": "https://imgur.com/6QK8ajy.png",
-    "Tahun 6 - Tulip": "https://imgur.com/qArYv0o.png",
-    "Tahun 6 - Daisy": "https://imgur.com/cx73z1i.png",
-    "Tahun 6 - Sakura (1)": "https://imgur.com/V2Jxj4X.png",
-    "Tahun 6 - Sakura (2)": "https://imgur.com/Ta9MkYw.png",
-    "Tahun 6 - Rose": "https://imgur.com/eikP5qs.png",
-    "Tahun 6 - Orchid": "https://imgur.com/xwXnvdH.png"
-}; 
+    "PPKI - 1 Dahlia": "https://imgur.com/tJ8QVt2.png",
+    "PPKI - 1 Rafflesia": "https://imgur.com/tJ8QVt2.png",
+    "PPKI - 2 Rafflesia": "https://imgur.com/T5YmX17.png",
+    "PPKI - 4 Rafflesia": "https://imgur.com/IZmusgd.png",
+    "PPKI - 6 Rafflesia": "https://imgur.com/NCWq8ON.png",
+    "Tahun 1 - Jasmine": "https://imgur.com/eNbxG4X.png",
+    "Tahun 1 - Hibiscus": "https://imgur.com/FWgN8WY.png",
+    "Tahun 1 - Sunflower": "https://imgur.com/x2iurLo.png",
+    "Tahun 1 - Lavender": "https://imgur.com/ejVxqgc.png",
+    "Tahun 1 - Tulip": "https://imgur.com/dNNbPSG.png",
+    "Tahun 1 - Daisy": "https://imgur.com/YH6yP5l.png",
+    "Tahun 1 - Sakura": "https://imgur.com/u8F1vI5.png",
+    "Tahun 1 - Rose": "https://imgur.com/RTEKlSZ.png",
+    "Tahun 1 - Orchid": "https://imgur.com/RHCQqt2.png",
+    "Tahun 1 - Lily": "https://imgur.com/SqcoyIo.png",
+    "Tahun 2 - Jasmine": "https://imgur.com/5MyCov5.png",
+    "Tahun 2 - Hibiscus": "https://imgur.com/WwcF9Fm.png",
+    "Tahun 2 - Sunflower": "https://imgur.com/qPT8pJr.png",
+    "Tahun 2 - Lavender": "https://imgur.com/kIbngoX.png",
+    "Tahun 2 - Tulip": "https://imgur.com/QI5OPNv.png",
+    "Tahun 2 - Daisy": "https://imgur.com/5Mx00Zl.png",
+    "Tahun 2 - Sakura": "https://imgur.com/N4rRFqY.png",
+    "Tahun 2 - Rose": "https://imgur.com/ibrQbgT.png",
+    "Tahun 2 - Orchid": "https://imgur.com/DAnt73C.png",
+    "Tahun 3 - Jasmine": "https://imgur.com/kkaSz93.png",
+    "Tahun 3 - Hibiscus": "https://imgur.com/dl8F0Fx.png",
+    "Tahun 3 - Sunflower": "https://imgur.com/NCs9vfU.png",
+    "Tahun 3 - Lavender": "https://imgur.com/5SAliLk.png",
+    "Tahun 3 - Tulip": "https://imgur.com/4Kit8fc.png",
+    "Tahun 3 - Daisy": "https://imgur.com/OpRCUHb.png",
+    "Tahun 3 - Sakura": "https://imgur.com/s8EbvPl.png",
+    "Tahun 3 - Rose": "https://imgur.com/m43fiyl.png",
+    "Tahun 3 - Orchid": "https://imgur.com/AcIqUsR.png",
+    "Tahun 3 - Lily": "https://imgur.com/D8U0GZe.png",
+    "Tahun 4 - Jasmine": "https://imgur.com/dcJ48wg.png",
+    "Tahun 4 - Hibiscus": "https://imgur.com/ylS55Gf.png",
+    "Tahun 4 - Sunflower": "https://imgur.com/6aCLcb6.png",
+    "Tahun 4 - Lavender": "https://imgur.com/p7TZbbB.png",
+    "Tahun 4 - Tulip": "https://imgur.com/RioSbeV.png",
+    "Tahun 4 - Daisy": "https://imgur.com/tzd10rI.png",
+    "Tahun 4 - Sakura": "https://imgur.com/GHxkyL9.png",
+    "Tahun 4 - Rose": "https://imgur.com/rJvdy2x.png",
+    "Tahun 4 - Orchid": "https://imgur.com/uUJyHi5.png",
+    "Tahun 5 - Jasmine": "https://imgur.com/jXA2QEC.png",
+    "Tahun 5 - Hibiscus": "https://imgur.com/jtz7igj.png",
+    "Tahun 5 - Sunflower": "https://imgur.com/8m1Ax2L.png",
+    "Tahun 5 - Lavender": "https://imgur.com/Aks7KN3.png",
+    "Tahun 5 - Tulip": "https://imgur.com/fIvyuIa.png",
+    "Tahun 5 - Daisy": "https://imgur.com/vjTiidC.png",
+    "Tahun 5 - Sakura": "https://imgur.com/0g439ug.png",
+    "Tahun 5 - Rose": "https://imgur.com/rDs7Xqa.png",
+    "Tahun 5 - Orchid": "https://imgur.com/XNeBd46.png",
+    "Tahun 5 - Lily": "https://imgur.com/ZRjvafT.png",
+    "Tahun 6 - Jasmine": "https://imgur.com/DapmYFE.png",
+    "Tahun 6 - Jasmine": "https://imgur.com/vrCE7JT.png",
+    "Tahun 6 - Hibiscus": "https://imgur.com/C3fxNPt.png",
+    "Tahun 6 - Sunflower": "https://imgur.com/8Ziac5G.png",
+    "Tahun 6 - Lavender": "https://imgur.com/omKOUNs.png",
+    "Tahun 6 - Lavender": "https://imgur.com/6QK8ajy.png",
+    "Tahun 6 - Tulip": "https://imgur.com/qArYv0o.png",
+    "Tahun 6 - Daisy": "https://imgur.com/cx73z1i.png",
+    "Tahun 6 - Sakura": "https://imgur.com/V2Jxj4X.png",
+    "Tahun 6 - Sakura": "https://imgur.com/Ta9MkYw.png",
+    "Tahun 6 - Rose": "https://imgur.com/eikP5qs.png",
+    "Tahun 6 - Orchid": "https://imgur.com/xwXnvdH.png",
+    // Tambah pautan Imgur untuk kelas-kelas lain di sini...
+};
 
 function bukaLoginGuru() {
     document.getElementById('passwordGuru').value = '';
@@ -1421,31 +1422,31 @@ function populateGuruClassDropdown() {
 }
 
 function muatTurunPreviewKelas() {
-    const yr = document.getElementById('guruYearSelect').value;
-    const cls = document.getElementById('guruClassSelect').value;
-    const container = document.getElementById('containerPreviewGambar');
+    const yr = document.getElementById('guruYearSelect').value;
+    const cls = document.getElementById('guruClassSelect').value;
+    const container = document.getElementById('containerPreviewGambar');
 
-    if (!yr || !cls) {
-        container.innerHTML = '<p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>';
-        return;
-    }
+    if (!yr || !cls) {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic">Sila pilih tahun dan kelas di atas untuk melihat preview gambar.</p>';
+        return;
+    }
 
-    let kunciKelas = `${yr} - ${cls}`; 
-    let imgUrl = imgurKelasMap[kunciKelas]; 
+    let kunciKelas = `${yr} - ${cls}`; 
+    let imgUrl = imgurKelasMap[kunciKelas]; 
 
-    if (imgUrl) {
-        // Tambah fungsi onclick supaya boleh klik untuk zum besar
-        container.innerHTML = `
-            <div class="relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl}', '${kunciKelas}')">
-                <img src="${imgUrl}" alt="Preview ${kunciKelas}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zoom in
-                </div>
-            </div>
-        `;
-    } else {
-        container.innerHTML = `<p class="text-xs text-amber-600 font-medium">Pautan Imgur belum dimasukkan untuk kelas <b>${kunciKelas}</b>.</p>`;
-    }
+    if (imgUrl) {
+        // Tambah fungsi onclick supaya boleh klik untuk zum besar
+        container.innerHTML = `
+            <div class="relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl}', '${kunciKelas}')">
+                <img src="${imgUrl}" alt="Preview ${kunciKelas}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zoom in
+                </div>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `<p class="text-xs text-amber-600 font-medium">Pautan Imgur belum dimasukkan untuk kelas <b>${kunciKelas}</b>.</p>`;
+    }
 }
 function hantarSusunanKeGoogleSheets() {
     const yr = document.getElementById('guruYearSelect').value;
