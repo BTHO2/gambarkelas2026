@@ -1297,9 +1297,10 @@ function downloadMasterAdminReportPDF() {
 // Anda boleh masukkan 62 pautan Imgur kelas anda di sini nanti:
 const imgurKelasMap = {
     "PPKI - 1 Dahlia": "https://imgur.com/tJ8QVt2.png",
+    "PPKI - 1 Rafflesia": "https://imgur.com/tJ8QVt2.png",
     "PPKI - 2 Rafflesia": "https://imgur.com/T5YmX17.png",
     "PPKI - 4 Rafflesia": "https://imgur.com/IZmusgd.png",
-    "PPKI - 6 Rafflesia": "https://imgur.com/NCWq8ON.png",
+    "PPKI - 5 Rafflesia": "https://imgur.com/NCWq8ON.png",
     "Tahun 1 - Jasmine": "https://imgur.com/eNbxG4X.png",
     "Tahun 1 - Hibiscus": "https://imgur.com/FWgN8WY.png",
     "Tahun 1 - Sunflower": "https://imgur.com/x2iurLo.png",
@@ -1348,19 +1349,20 @@ const imgurKelasMap = {
     "Tahun 5 - Rose": "https://imgur.com/rDs7Xqa.png",
     "Tahun 5 - Orchid": "https://imgur.com/XNeBd46.png",
     "Tahun 5 - Lily": "https://imgur.com/ZRjvafT.png",
-    "Tahun 6 - Jasmine": "https://imgur.com/DapmYFE.png",
-    "Tahun 6 - Jasmine": "https://imgur.com/vrCE7JT.png",
+    
+    // Dipecahkan kepada (1) dan (2) supaya guru kelas boleh hantar data secara berasingan
+    "Tahun 6 - Jasmine (1)": "https://imgur.com/DapmYFE.png",
+    "Tahun 6 - Jasmine (2)": "https://imgur.com/vrCE7JT.png",
     "Tahun 6 - Hibiscus": "https://imgur.com/C3fxNPt.png",
     "Tahun 6 - Sunflower": "https://imgur.com/8Ziac5G.png",
-    "Tahun 6 - Lavender": "https://imgur.com/omKOUNs.png",
-    "Tahun 6 - Lavender": "https://imgur.com/6QK8ajy.png",
+    "Tahun 6 - Lavender (1)": "https://imgur.com/omKOUNs.png",
+    "Tahun 6 - Lavender (2)": "https://imgur.com/6QK8ajy.png",
     "Tahun 6 - Tulip": "https://imgur.com/qArYv0o.png",
     "Tahun 6 - Daisy": "https://imgur.com/cx73z1i.png",
-    "Tahun 6 - Sakura": "https://imgur.com/V2Jxj4X.png",
-    "Tahun 6 - Sakura": "https://imgur.com/Ta9MkYw.png",
+    "Tahun 6 - Sakura (1)": "https://imgur.com/V2Jxj4X.png",
+    "Tahun 6 - Sakura (2)": "https://imgur.com/Ta9MkYw.png",
     "Tahun 6 - Rose": "https://imgur.com/eikP5qs.png",
-    "Tahun 6 - Orchid": "https://imgur.com/xwXnvdH.png",
-    // Tambah pautan Imgur untuk kelas-kelas lain di sini...
+    "Tahun 6 - Orchid": "https://imgur.com/xwXnvdH.png"
 };
 
 function bukaLoginGuru() {
@@ -1431,18 +1433,33 @@ function muatTurunPreviewKelas() {
     }
 
     let kunciKelas = `${yr} - ${cls}`; 
-    let imgUrl = imgurKelasMap[kunciKelas]; 
+    let imgUrls = [];
 
-    if (imgUrl) {
-        // Tambah fungsi onclick supaya boleh klik untuk zum besar
-        container.innerHTML = `
-            <div class="relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl}', '${kunciKelas}')">
-                <img src="${imgUrl}" alt="Preview ${kunciKelas}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
-                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
-                    <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zoom in
+    // Jika kelas Tahun 6 tertentu, ambil kedua-dua pautan (1) dan (2)
+    if (kunciKelas === "Tahun 6 - Jasmine" || kunciKelas === "Tahun 6 - Lavender" || kunciKelas === "Tahun 6 - Sakura") {
+        let url1 = imgurKelasMap[`${kunciKelas} (1)`];
+        let url2 = imgurKelasMap[`${kunciKelas} (2)`];
+        if (url1) imgUrls.push({ url: url1, label: " (Bahagian 1)" });
+        if (url2) imgUrls.push({ url: url2, label: " (Bahagian 2)" });
+    } else {
+        // Untuk kelas biasa yang lain (hanya 1 URL)
+        let imgUrl = imgurKelasMap[kunciKelas];
+        if (imgUrl) imgUrls.push({ url: imgUrl, label: "" });
+    }
+
+    if (imgUrls.length > 0) {
+        let htmlContent = '';
+        imgUrls.forEach(item => {
+            htmlContent += `
+                <div class="relative group cursor-pointer mb-3" onclick="bukaZoomGambar('${item.url}', '${kunciKelas}${item.label}')">
+                    <img src="${item.url}" alt="Preview ${kunciKelas}${item.label}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zoom in${item.label}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        });
+        container.innerHTML = htmlContent;
     } else {
         container.innerHTML = `<p class="text-xs text-amber-600 font-medium">Pautan Imgur belum dimasukkan untuk kelas <b>${kunciKelas}</b>.</p>`;
     }
