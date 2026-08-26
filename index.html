@@ -1349,16 +1349,16 @@ const imgurKelasMap = {
     "Tahun 5 - Rose": "https://imgur.com/rDs7Xqa.png",
     "Tahun 5 - Orchid": "https://imgur.com/XNeBd46.png",
     "Tahun 5 - Lily": "https://imgur.com/ZRjvafT.png",
-    "Tahun 6 - Jasmine": "https://imgur.com/DapmYFE.png",
-    "Tahun 6 - Jasmine": "https://imgur.com/vrCE7JT.png",
+    "Tahun 6 - Jasmine (1)": "https://imgur.com/DapmYFE.png",
+    "Tahun 6 - Jasmine (2)": "https://imgur.com/vrCE7JT.png",
     "Tahun 6 - Hibiscus": "https://imgur.com/C3fxNPt.png",
     "Tahun 6 - Sunflower": "https://imgur.com/8Ziac5G.png",
-    "Tahun 6 - Lavender": "https://imgur.com/omKOUNs.png",
-    "Tahun 6 - Lavender": "https://imgur.com/6QK8ajy.png",
+    "Tahun 6 - Lavender (1)": "https://imgur.com/omKOUNs.png",
+    "Tahun 6 - Lavender (2)": "https://imgur.com/6QK8ajy.png",
     "Tahun 6 - Tulip": "https://imgur.com/qArYv0o.png",
     "Tahun 6 - Daisy": "https://imgur.com/cx73z1i.png",
-    "Tahun 6 - Sakura": "https://imgur.com/V2Jxj4X.png",
-    "Tahun 6 - Sakura": "https://imgur.com/Ta9MkYw.png",
+    "Tahun 6 - Sakura (1)": "https://imgur.com/V2Jxj4X.png",
+    "Tahun 6 - Sakura (2)": "https://imgur.com/Ta9MkYw.png",
     "Tahun 6 - Rose": "https://imgur.com/eikP5qs.png",
     "Tahun 6 - Orchid": "https://imgur.com/xwXnvdH.png",
     // Tambah pautan Imgur untuk kelas-kelas lain di sini...
@@ -1432,13 +1432,44 @@ function muatTurunPreviewKelas() {
     }
 
     let kunciKelas = `${yr} - ${cls}`; 
-    let imgUrl = imgurKelasMap[kunciKelas]; 
 
-    if (imgUrl) {
-        // Tambah fungsi onclick supaya boleh klik untuk zum besar
+    // Semak sama ada kelas ni ada pautan (1) dan (2)
+    let imgUrl1 = imgurKelasMap[`${kunciKelas} (1)`];
+    let imgUrl2 = imgurKelasMap[`${kunciKelas} (2)`];
+    let imgUrlBiasa = imgurKelasMap[kunciKelas]; // Untuk kelas biasa
+
+    if (imgUrl1 && imgUrl2) {
+        // KHAS UNTUK TAHUN 6 (Jasmine, Lavender, Sakura): Saiz kotak sama, boleh slide kanan untuk gambar ke-2
         container.innerHTML = `
-            <div class="relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl}', '${kunciKelas}')">
-                <img src="${imgUrl}" alt="Preview ${kunciKelas}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
+            <div class="relative">
+                <div class="flex overflow-x-auto snap-x snap-mandatory scrollbar-none rounded-lg shadow-md">
+                    <!-- Gambar 1 -->
+                    <div class="min-w-full w-full flex-shrink-0 snap-center relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl1}', '${kunciKelas} - Bahagian 1')">
+                        <img src="${imgUrl1}" alt="${kunciKelas} Bahagian 1" class="w-full h-auto rounded-lg hover:opacity-95 transition-all">
+                        <div class="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">Bhg 1 (Geser ➔)</div>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zum in (Bhg 1)
+                        </div>
+                    </div>
+                    <!-- Gambar 2 -->
+                    <div class="min-w-full w-full flex-shrink-0 snap-center relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrl2}', '${kunciKelas} - Bahagian 2')">
+                        <img src="${imgUrl2}" alt="${kunciKelas} Bahagian 2" class="w-full h-auto rounded-lg hover:opacity-95 transition-all">
+                        <div class="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">Bhg 2 (⬅ Geser)</div>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zoom in (Bhg 2)
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center gap-1.5 mt-2">
+                    <span class="text-[10px] text-slate-400 italic"><i class="fa-solid fa-arrows-left-right text-emerald-500"></i> Geser kiri/kanan pada gambar untuk lihat bahagian lain</span>
+                </div>
+            </div>
+        `;
+    } else if (imgUrlBiasa) {
+        // UNTUK KELAS BIASA LAIN (Hanya 1 gambar, saiz sama sebijik)
+        container.innerHTML = `
+            <div class="relative group cursor-pointer" onclick="bukaZoomGambar('${imgUrlBiasa}', '${kunciKelas}')">
+                <img src="${imgUrlBiasa}" alt="Preview ${kunciKelas}" class="w-full h-auto rounded-lg shadow-md hover:opacity-95 transition-all">
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-white text-xs font-semibold gap-1.5">
                     <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk zoom in
                 </div>
