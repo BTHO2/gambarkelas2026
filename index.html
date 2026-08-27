@@ -282,13 +282,13 @@
                         <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wider border-b pb-2"><i class="fa-solid fa-wallet text-indigo-600 mr-2"></i> Kaedah Pembayaran</h3>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                           <label onclick="alert('Maaf, pembayaran tunai tidak lagi diterima. Sila buat tempahan melalui QR Akaun DBHOSS sahaja.'); return false;" class="border-2 border-slate-200 rounded-xl p-4 flex items-start space-x-3 cursor-pointer hover:border-indigo-500 transition has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50">
-                           <input type="radio" name="paymentMethod" value="Tunai Guru Kelas" required onchange="togglePaymentSection('tunai')" class="mt-1 text-indigo-600 focus:ring-indigo-500">
-                             <div>
-                                <span class="block font-bold text-slate-900 text-sm">Tunai melalui Guru Kelas</span>
-                                <span class="block text-xs text-slate-500 mt-0.5">Bayar terus kepada guru kelas semasa hadir ke sekolah.</span>
-                             </div>
-                             </label>
+                         <label onclick="tunjukkanNotifikasiGagal('Maaf, pembayaran tunai tidak lagi diterima. Sila buat tempahan melalui QR Akaun DDBHOSS sahaja.'); return false;" class="border-2 border-slate-200 rounded-xl p-4 flex items-start space-x-3 cursor-pointer hover:border-indigo-500 transition has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50">
+    <input type="radio" name="paymentMethod" value="Tunai Guru Kelas" required onchange="togglePaymentSection('tunai')" class="mt-1 text-indigo-600 focus:ring-indigo-500">
+    <div>
+        <span class="block font-bold text-slate-900 text-sm">Tunai melalui Guru Kelas</span>
+        <span class="block text-xs text-slate-500 mt-0.5">Bayar terus kepada guru kelas semasa hadir ke sekolah.</span>
+    </div>
+</label>
 
                             <label class="border-2 border-slate-200 rounded-xl p-4 flex items-start space-x-3 cursor-pointer hover:border-indigo-500 transition has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50">
                                 <input type="radio" name="paymentMethod" value="QR DBHOSS" required onchange="togglePaymentSection('qr')" class="mt-1 text-indigo-600 focus:ring-indigo-500">
